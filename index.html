@@ -978,6 +978,8 @@
             clearInterval(this.timerInterval);
             this.timerInterval = null;
           }
+          // 정확한 소요시간 계산 (소수점 2자리)
+          this.elapsedTime = Math.round((Date.now() - this.questionStartTime) / 10) / 100;
         },
 
         resetTimer() {
