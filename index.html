@@ -1076,13 +1076,13 @@
           this.syncStatus = 'syncing';
 
           try {
-            // 선지 포맷팅: "A. 내용 / B. 내용 / ..."
+            // 선지 포맷팅: 줄바꿈으로 구분
             const choicesText = Object.entries(this.question.choices)
               .map(([key, val]) => `${key}. ${val}`)
-              .join(' / ');
+              .join('\n');
 
-            // 해설 포맷팅
-            const explanationText = (this.question.explanations || []).join('\n');
+            // 해설 포맷팅: 줄바꿈으로 구분
+            const explanationText = (this.question.explanations || []).join('\n\n');
 
             const payload = {
               action: 'saveQuizResult',
