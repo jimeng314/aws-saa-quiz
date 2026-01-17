@@ -344,6 +344,7 @@ function updateTotalSummary(ss) {
     sheet.getRange(1, 1, summaryData.length, headers.length).setValues(summaryData);
     sheet.getRange(1, 1, 1, headers.length).setFontWeight('bold');
     sheet.setFrozenRows(1);
+    sheet.getRange(1, 1, summaryData.length, headers.length).setVerticalAlignment('top');
   }
 }
 
@@ -447,6 +448,7 @@ function updateServiceSummary(ss) {
     sheet.getRange(1, 1, summaryData.length, headers.length).setValues(summaryData);
     sheet.getRange(1, 1, 1, headers.length).setFontWeight('bold');
     sheet.setFrozenRows(1);
+    sheet.getRange(1, 1, summaryData.length, headers.length).setVerticalAlignment('top');
   }
 }
 
