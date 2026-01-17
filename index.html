@@ -25,6 +25,7 @@
       margin: 0 auto;
     }
 
+    /* 헤더 */
     .header {
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       color: white;
@@ -40,6 +41,51 @@
       text-align: center;
     }
 
+    .header-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 1rem;
+    }
+
+    .user-badge {
+      background: rgba(255,255,255,0.2);
+      border: 1px solid rgba(255,255,255,0.3);
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      color: white;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .user-badge button {
+      background: none;
+      border: none;
+      color: rgba(255,255,255,0.7);
+      cursor: pointer;
+      padding: 0;
+      font-size: 1rem;
+    }
+
+    .user-badge button:hover {
+      color: white;
+    }
+
+    .sync-status {
+      font-size: 0.8rem;
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+
+    .sync-status.syncing { color: #fcd34d; }
+    .sync-status.success { color: #86efac; }
+    .sync-status.error { color: #fca5a5; }
+    .sync-status.offline { color: #9ca3af; }
+
+    /* 로딩 */
     .loading {
       text-align: center;
       padding: 3rem;
@@ -47,33 +93,92 @@
       color: #667eea;
     }
 
+    /* 모드 선택 패널 */
+    .mode-panel {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      margin-bottom: 1.5rem;
+    }
+
+    .mode-panel h3 {
+      font-size: 1rem;
+      color: #374151;
+      margin-bottom: 1rem;
+    }
+
+    .mode-buttons {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .mode-btn {
+      padding: 0.6rem 1.2rem;
+      border: 2px solid #e5e7eb;
+      border-radius: 8px;
+      background: white;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-family: inherit;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .mode-btn:hover {
+      border-color: #667eea;
+      background: #f5f3ff;
+    }
+
+    .mode-btn.active {
+      border-color: #667eea;
+      background: #667eea;
+      color: white;
+    }
+
+    .mode-btn .count {
+      font-size: 0.75rem;
+      background: rgba(0,0,0,0.1);
+      padding: 0.15rem 0.4rem;
+      border-radius: 10px;
+    }
+
+    .mode-btn.active .count {
+      background: rgba(255,255,255,0.2);
+    }
+
+    /* 통계 카드 */
     .stats {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
       gap: 1rem;
       margin-bottom: 1.5rem;
     }
 
     .stat-card {
       background: white;
-      padding: 1.5rem;
+      padding: 1.2rem;
       border-radius: 12px;
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
       text-align: center;
     }
 
     .stat-card h3 {
-      font-size: 0.9rem;
+      font-size: 0.8rem;
       color: #6b7280;
-      margin-bottom: 0.5rem;
+      margin-bottom: 0.3rem;
     }
 
     .stat-card p {
-      font-size: 2rem;
+      font-size: 1.5rem;
       font-weight: 700;
       color: #667eea;
     }
 
+    /* 퀴즈 컨테이너 */
     .quiz-container {
       background: white;
       padding: 2rem;
@@ -85,7 +190,7 @@
     progress {
       width: 100%;
       height: 12px;
-      margin-bottom: 1rem;
+      margin-bottom: 0.5rem;
       border-radius: 8px;
       overflow: hidden;
       appearance: none;
@@ -106,10 +211,28 @@
       border-radius: 8px;
     }
 
-    .progress-text {
-      font-size: 0.9rem;
+    .progress-info {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.85rem;
       color: #6b7280;
       margin-bottom: 1.5rem;
+    }
+
+    .service-tags {
+      display: flex;
+      gap: 0.4rem;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .service-tag {
+      background: #dbeafe;
+      color: #1d4ed8;
+      padding: 0.25rem 0.6rem;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: 500;
     }
 
     .question {
@@ -234,6 +357,7 @@
       min-width: 120px;
     }
 
+    /* 컨트롤 패널 */
     .control-panel {
       background: white;
       padding: 1.5rem;
@@ -243,8 +367,8 @@
     }
 
     .control-panel h3 {
-      font-size: 1.1rem;
-      color: #1f2937;
+      font-size: 1rem;
+      color: #374151;
       margin-bottom: 1rem;
     }
 
@@ -269,30 +393,95 @@
       border-color: #667eea;
     }
 
-    .wrong-answers {
-      color: #dc2626;
-      font-weight: 500;
-      margin: 1rem 0;
-      line-height: 1.8;
-    }
-
-    .button-group {
+    /* 로그인 모달 */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
       display: flex;
-      gap: 0.5rem;
-      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
     }
 
-    .btn-danger {
-      background: #ef4444;
+    .modal {
+      background: white;
+      padding: 2rem;
+      border-radius: 16px;
+      max-width: 400px;
+      width: 90%;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
     }
 
-    .btn-danger:hover:not(:disabled) {
-      background: #dc2626;
+    .modal h2 {
+      margin-bottom: 0.5rem;
+      color: #1f2937;
+      font-size: 1.5rem;
+    }
+
+    .modal p {
+      color: #6b7280;
+      margin-bottom: 1.5rem;
+      font-size: 0.9rem;
+    }
+
+    .modal select {
+      width: 100%;
+      padding: 0.85rem 1rem;
+      border: 2px solid #e5e7eb;
+      border-radius: 8px;
+      font-size: 1rem;
+      margin-bottom: 1rem;
+      font-family: inherit;
+      background: white;
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236b7280' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 1rem center;
+    }
+
+    .modal select:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+
+    .modal .btn {
+      width: 100%;
+      margin-top: 0;
+    }
+
+    .modal .info-box {
+      background: #f0fdf4;
+      border: 1px solid #86efac;
+      border-radius: 8px;
+      padding: 1rem;
+      margin-bottom: 1.5rem;
+      font-size: 0.85rem;
+      color: #166534;
+    }
+
+    .modal .error-box {
+      background: #fef2f2;
+      border: 1px solid #fca5a5;
+      border-radius: 8px;
+      padding: 1rem;
+      margin-bottom: 1.5rem;
+      font-size: 0.85rem;
+      color: #991b1b;
     }
 
     @media (max-width: 640px) {
       .header h1 {
         font-size: 1.3rem;
+      }
+
+      .header-content {
+        flex-direction: column;
+        gap: 0.5rem;
       }
 
       .quiz-container {
@@ -307,36 +496,132 @@
         width: 100%;
       }
 
+      .stats {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
       .stat-card p {
-        font-size: 1.5rem;
+        font-size: 1.3rem;
+      }
+
+      .mode-buttons {
+        flex-direction: column;
+      }
+
+      .mode-btn {
+        justify-content: center;
       }
     }
   </style>
 </head>
 <body>
   <div id="app">
+    <!-- 로그인 모달 -->
+    <div class="modal-overlay" v-if="showLoginModal">
+      <div class="modal">
+        <h2>AWS SAA 스터디</h2>
+        <p>이름을 선택하면 풀이 기록이 저장됩니다.</p>
+
+        <div class="info-box" v-if="!loginError">
+          기록은 자동으로 저장되며, 나중에 복습할 때 활용할 수 있습니다.
+        </div>
+
+        <div class="error-box" v-if="loginError">
+          {{ loginError }}
+        </div>
+
+        <select v-model="selectedUser" :disabled="loadingUsers">
+          <option value="" disabled>{{ loadingUsers ? '불러오는 중...' : '이름을 선택하세요' }}</option>
+          <option v-for="user in users" :key="user.name" :value="user.name">
+            {{ user.name }}
+          </option>
+        </select>
+
+        <button class="btn" @click="login" :disabled="!selectedUser || loadingUsers">
+          시작하기
+        </button>
+      </div>
+    </div>
+
     <div class="container">
+      <!-- 헤더 -->
       <div class="header">
         <h1>AWS Solution Architect Associate</h1>
+        <div class="header-content" v-if="currentUser">
+          <div class="user-badge">
+            {{ currentUser }}
+            <button @click="logout" title="로그아웃">✕</button>
+          </div>
+          <div class="sync-status" :class="syncStatusClass">
+            <span>{{ syncStatusIcon }}</span> {{ syncStatusText }}
+          </div>
+        </div>
       </div>
 
+      <!-- 로딩 -->
       <div v-if="loading" class="loading">
         문제 데이터를 불러오는 중...
       </div>
 
+      <!-- 에러 -->
       <div v-else-if="error" class="quiz-container">
         <p style="color: #ef4444; font-size: 1.2rem; text-align: center;">{{ error }}</p>
       </div>
 
-      <template v-else>
+      <!-- 메인 콘텐츠 -->
+      <template v-else-if="currentUser">
+        <!-- 풀이 모드 선택 -->
+        <div class="mode-panel">
+          <h3>풀이 모드 선택</h3>
+          <div class="mode-buttons">
+            <button
+              class="mode-btn"
+              :class="{ active: currentMode === 'sequential' }"
+              @click="setMode('sequential')"
+            >
+              순차
+              <span class="count">{{ fullQuestions.length }}</span>
+            </button>
+            <button
+              class="mode-btn"
+              :class="{ active: currentMode === 'random' }"
+              @click="setMode('random')"
+            >
+              랜덤
+              <span class="count">{{ fullQuestions.length }}</span>
+            </button>
+            <button
+              class="mode-btn"
+              :class="{ active: currentMode === 'wrong' }"
+              @click="setMode('wrong')"
+            >
+              오답복습
+              <span class="count">{{ wrongQuestions.length }}</span>
+            </button>
+            <button
+              class="mode-btn"
+              :class="{ active: currentMode === 'unsolved' }"
+              @click="setMode('unsolved')"
+            >
+              미풀이
+              <span class="count">{{ unsolvedQuestions.length }}</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 통계 -->
         <div class="stats">
           <div class="stat-card">
             <h3>전체 문제</h3>
             <p>{{ fullQuestions.length }}</p>
           </div>
           <div class="stat-card">
+            <h3>푼 문제</h3>
+            <p style="color: #3b82f6;">{{ solvedQuestions.length }}</p>
+          </div>
+          <div class="stat-card">
             <h3>틀린 문제</h3>
-            <p style="color: #ef4444;">{{ wrongAnswers.length }}</p>
+            <p style="color: #ef4444;">{{ wrongQuestions.length }}</p>
           </div>
           <div class="stat-card">
             <h3>정답률</h3>
@@ -344,11 +629,22 @@
           </div>
         </div>
 
-        <div class="quiz-container">
+        <!-- 퀴즈 -->
+        <div class="quiz-container" v-if="questions.length > 0">
           <progress :value="current + 1" :max="questions.length"></progress>
-          <p class="progress-text">진행률: {{ current + 1 }} / {{ questions.length }}</p>
+          <div class="progress-info">
+            <span>진행률: {{ current + 1 }} / {{ questions.length }}</span>
+            <span>{{ formatTime(elapsedTime) }}</span>
+          </div>
 
           <div v-if="question">
+            <!-- AWS 서비스 태그 -->
+            <div class="service-tags" v-if="question.services && question.services.length">
+              <span class="service-tag" v-for="service in question.services" :key="service">
+                {{ service }}
+              </span>
+            </div>
+
             <p class="question">{{ question.question }}</p>
 
             <div v-for="(text, key) in question.choices" :key="key">
@@ -384,7 +680,15 @@
           </div>
         </div>
 
-        <div class="control-panel">
+        <!-- 문제 없음 -->
+        <div class="quiz-container" v-else>
+          <p style="text-align: center; color: #6b7280; padding: 2rem;">
+            {{ currentMode === 'wrong' ? '틀린 문제가 없습니다!' : '미풀이 문제가 없습니다!' }}
+          </p>
+        </div>
+
+        <!-- 문제 번호 이동 -->
+        <div class="control-panel" v-if="questions.length > 0">
           <h3>문제 번호 이동</h3>
           <div class="jump-section">
             <input
@@ -398,27 +702,6 @@
             <button class="btn" @click="jumpTo">이동</button>
           </div>
         </div>
-
-        <div class="control-panel">
-          <h3>틀린 문제 관리</h3>
-          <p class="wrong-answers">
-            {{ wrongAnswers.length > 0 ? wrongAnswers.join(', ') : '없음' }}
-          </p>
-          <div class="button-group" v-if="wrongAnswers.length">
-            <button
-              class="btn"
-              @click="viewWrongOnly = !viewWrongOnly"
-            >
-              {{ viewWrongOnly ? '전체 문제 보기' : '틀린 문제만 보기' }}
-            </button>
-            <button
-              class="btn btn-danger"
-              @click="clearWrongAnswers"
-            >
-              틀린 문제 초기화
-            </button>
-          </div>
-        </div>
       </template>
     </div>
   </div>
@@ -426,49 +709,307 @@
   <script>
     const { createApp } = Vue;
 
+    // ========================================
+    // 설정 - Google Apps Script 웹앱 URL을 여기에 입력하세요
+    // ========================================
+    const API_URL = 'https://script.google.com/macros/s/AKfycbycc9-5yDo0IaUeqVYzudPZvv7JkdVfB5DwrPzbMubLTG-k1QPx2VwJRgRhe-78L5XGtg/exec';
+
     createApp({
       data() {
-        const savedWrong = localStorage.getItem('wrongAnswers');
         return {
+          // 로딩 상태
           loading: true,
+          loadingUsers: true,
           error: null,
+          loginError: null,
+
+          // 사용자
+          users: [],
+          selectedUser: '',
+          currentUser: localStorage.getItem('aws-quiz-user') || null,
+          showLoginModal: !localStorage.getItem('aws-quiz-user'),
+
+          // 세션
+          sessionId: this.generateSessionId(),
+
+          // 문제 데이터
           fullQuestions: [],
-          viewWrongOnly: false,
           questions: [],
           current: 0,
+
+          // 사용자 통계
+          solvedQuestions: [],
+          wrongQuestions: [],
+
+          // 현재 문제 상태
           selectedChoices: [],
           showAnswer: false,
           showExplanation: false,
-          wrongAnswers: savedWrong ? JSON.parse(savedWrong) : [],
-          jumpNumber: null
+
+          // 모드
+          currentMode: 'sequential',
+          modeNames: {
+            'sequential': '순차',
+            'random': '랜덤',
+            'wrong': '오답복습',
+            'unsolved': '미풀이'
+          },
+
+          // 타이머
+          elapsedTime: 0,
+          timerInterval: null,
+          questionStartTime: null,
+
+          // 동기화 상태
+          syncStatus: 'offline', // 'syncing', 'success', 'error', 'offline'
+
+          // 기타
+          jumpNumber: null,
+          attemptCounts: {} // 문제별 시도 횟수
         };
       },
+
       computed: {
         question() {
           return this.questions[this.current];
         },
+
+        unsolvedQuestions() {
+          return this.fullQuestions.filter(q => !this.solvedQuestions.includes(q.id));
+        },
+
         accuracyRate() {
-          if (this.fullQuestions.length === 0) return 0;
-          const correct = this.fullQuestions.length - this.wrongAnswers.length;
-          return Math.round((correct / this.fullQuestions.length) * 100);
+          if (this.solvedQuestions.length === 0) return 0;
+          const correct = this.solvedQuestions.length - this.wrongQuestions.length;
+          return Math.round((correct / this.solvedQuestions.length) * 100);
+        },
+
+        syncStatusClass() {
+          return this.syncStatus;
+        },
+
+        syncStatusIcon() {
+          const icons = {
+            'syncing': '◐',
+            'success': '●',
+            'error': '●',
+            'offline': '○'
+          };
+          return icons[this.syncStatus] || '○';
+        },
+
+        syncStatusText() {
+          const texts = {
+            'syncing': '저장 중...',
+            'success': '저장 완료',
+            'error': '저장 실패',
+            'offline': '오프라인'
+          };
+          return texts[this.syncStatus] || '오프라인';
         }
       },
+
       async mounted() {
-        try {
-          const response = await fetch('./questions.json');
-          if (!response.ok) {
-            throw new Error('문제 데이터를 불러올 수 없습니다.');
-          }
-          const data = await response.json();
-          this.fullQuestions = data;
-          this.questions = data;
-          this.loading = false;
-        } catch (err) {
-          this.error = err.message;
-          this.loading = false;
+        // 문제 데이터 로드
+        await this.loadQuestions();
+
+        // 사용자 목록 로드
+        await this.loadUsers();
+
+        // 이미 로그인된 경우 사용자 통계 로드
+        if (this.currentUser) {
+          await this.loadUserStats();
+          this.startTimer();
         }
       },
+
+      beforeUnmount() {
+        this.stopTimer();
+      },
+
       methods: {
+        // ========================================
+        // 유틸리티
+        // ========================================
+        generateSessionId() {
+          return 'sess_' + Math.random().toString(36).substring(2, 11);
+        },
+
+        formatTime(seconds) {
+          const min = Math.floor(seconds / 60).toString().padStart(2, '0');
+          const sec = (seconds % 60).toString().padStart(2, '0');
+          return `${min}:${sec}`;
+        },
+
+        shuffleArray(array) {
+          const shuffled = [...array];
+          for (let i = shuffled.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+          }
+          return shuffled;
+        },
+
+        // ========================================
+        // 데이터 로드
+        // ========================================
+        async loadQuestions() {
+          try {
+            const response = await fetch('./questions.json');
+            if (!response.ok) throw new Error('문제 데이터를 불러올 수 없습니다.');
+            this.fullQuestions = await response.json();
+            this.questions = [...this.fullQuestions];
+            this.loading = false;
+          } catch (err) {
+            this.error = err.message;
+            this.loading = false;
+          }
+        },
+
+        async loadUsers() {
+          this.loadingUsers = true;
+
+          // API URL이 설정되지 않은 경우 로컬 모드
+          if (API_URL === 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE') {
+            this.users = [{ name: '테스트 사용자' }];
+            this.loadingUsers = false;
+            this.syncStatus = 'offline';
+            return;
+          }
+
+          try {
+            const response = await fetch(`${API_URL}?action=getUsers`);
+            const result = await response.json();
+
+            if (result.success) {
+              this.users = result.users;
+              this.syncStatus = 'success';
+            } else {
+              throw new Error(result.error);
+            }
+          } catch (err) {
+            console.error('사용자 목록 로드 실패:', err);
+            this.loginError = '사용자 목록을 불러올 수 없습니다. 오프라인 모드로 시작합니다.';
+            this.users = [{ name: '게스트' }];
+            this.syncStatus = 'offline';
+          }
+
+          this.loadingUsers = false;
+        },
+
+        async loadUserStats() {
+          if (API_URL === 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE') {
+            // 로컬 스토리지에서 로드
+            const saved = localStorage.getItem(`aws-quiz-stats-${this.currentUser}`);
+            if (saved) {
+              const stats = JSON.parse(saved);
+              this.solvedQuestions = stats.solvedQuestions || [];
+              this.wrongQuestions = stats.wrongQuestions || [];
+              this.attemptCounts = stats.attemptCounts || {};
+            }
+            return;
+          }
+
+          try {
+            const response = await fetch(`${API_URL}?action=getUserStats&userName=${encodeURIComponent(this.currentUser)}`);
+            const result = await response.json();
+
+            if (result.success) {
+              this.solvedQuestions = result.stats.solvedQuestions || [];
+              this.wrongQuestions = result.stats.wrongQuestions || [];
+
+              // 시도 횟수 계산
+              this.solvedQuestions.forEach(id => {
+                this.attemptCounts[id] = (this.attemptCounts[id] || 0) + 1;
+              });
+            }
+          } catch (err) {
+            console.error('사용자 통계 로드 실패:', err);
+          }
+        },
+
+        // ========================================
+        // 로그인/로그아웃
+        // ========================================
+        async login() {
+          if (!this.selectedUser) return;
+
+          this.currentUser = this.selectedUser;
+          localStorage.setItem('aws-quiz-user', this.currentUser);
+          this.showLoginModal = false;
+          this.sessionId = this.generateSessionId();
+
+          await this.loadUserStats();
+          this.startTimer();
+        },
+
+        logout() {
+          if (confirm('로그아웃 하시겠습니까?')) {
+            this.stopTimer();
+            this.currentUser = null;
+            localStorage.removeItem('aws-quiz-user');
+            this.showLoginModal = true;
+            this.selectedUser = '';
+            this.solvedQuestions = [];
+            this.wrongQuestions = [];
+            this.attemptCounts = {};
+            this.resetState();
+            this.setMode('sequential');
+          }
+        },
+
+        // ========================================
+        // 타이머
+        // ========================================
+        startTimer() {
+          this.questionStartTime = Date.now();
+          this.elapsedTime = 0;
+          this.timerInterval = setInterval(() => {
+            this.elapsedTime = Math.floor((Date.now() - this.questionStartTime) / 1000);
+          }, 1000);
+        },
+
+        stopTimer() {
+          if (this.timerInterval) {
+            clearInterval(this.timerInterval);
+            this.timerInterval = null;
+          }
+        },
+
+        resetTimer() {
+          this.questionStartTime = Date.now();
+          this.elapsedTime = 0;
+        },
+
+        // ========================================
+        // 모드 변경
+        // ========================================
+        setMode(mode) {
+          this.currentMode = mode;
+          this.current = 0;
+          this.resetState();
+
+          switch (mode) {
+            case 'sequential':
+              this.questions = [...this.fullQuestions];
+              break;
+            case 'random':
+              this.questions = this.shuffleArray([...this.fullQuestions]);
+              break;
+            case 'wrong':
+              this.questions = this.fullQuestions.filter(q => this.wrongQuestions.includes(q.id));
+              break;
+            case 'unsolved':
+              this.questions = this.fullQuestions.filter(q => !this.solvedQuestions.includes(q.id));
+              break;
+          }
+
+          this.resetTimer();
+        },
+
+        // ========================================
+        // 문제 풀이
+        // ========================================
         toggleChoice(choice) {
           if (this.showAnswer) return;
 
@@ -485,69 +1026,130 @@
             this.submitAnswer();
           }
         },
-        submitAnswer() {
+
+        async submitAnswer() {
           this.showAnswer = true;
+
           const selectedSorted = [...this.selectedChoices].sort().join(',');
           const correctSorted = [...this.question.answers].sort().join(',');
+          const isCorrect = selectedSorted === correctSorted;
 
-          if (selectedSorted !== correctSorted) {
-            if (!this.wrongAnswers.includes(this.question.id)) {
-              this.wrongAnswers.push(this.question.id);
-              localStorage.setItem('wrongAnswers', JSON.stringify(this.wrongAnswers));
+          // 시도 횟수 업데이트
+          this.attemptCounts[this.question.id] = (this.attemptCounts[this.question.id] || 0) + 1;
+
+          // 통계 업데이트
+          if (!this.solvedQuestions.includes(this.question.id)) {
+            this.solvedQuestions.push(this.question.id);
+          }
+
+          if (!isCorrect) {
+            if (!this.wrongQuestions.includes(this.question.id)) {
+              this.wrongQuestions.push(this.question.id);
             }
+          } else {
+            // 맞춘 경우 오답 목록에서 제거
+            this.wrongQuestions = this.wrongQuestions.filter(id => id !== this.question.id);
+          }
+
+          // 결과 저장
+          await this.saveQuizResult(isCorrect);
+        },
+
+        async saveQuizResult(isCorrect) {
+          // 로컬 스토리지에 저장
+          const stats = {
+            solvedQuestions: this.solvedQuestions,
+            wrongQuestions: this.wrongQuestions,
+            attemptCounts: this.attemptCounts
+          };
+          localStorage.setItem(`aws-quiz-stats-${this.currentUser}`, JSON.stringify(stats));
+
+          // API가 설정되지 않은 경우 로컬 모드
+          if (API_URL === 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE') {
+            return;
+          }
+
+          this.syncStatus = 'syncing';
+
+          try {
+            const response = await fetch(API_URL, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                action: 'saveQuizResult',
+                userName: this.currentUser,
+                sessionId: this.sessionId,
+                mode: this.modeNames[this.currentMode],
+                questionId: this.question.id,
+                questionText: this.question.question,
+                questionType: this.question.answers.length > 1 ? '복수선택' : '단일선택',
+                services: this.question.services || [],
+                selectedAnswers: this.selectedChoices,
+                correctAnswers: this.question.answers,
+                isCorrect: isCorrect,
+                elapsedTime: this.elapsedTime,
+                attemptCount: this.attemptCounts[this.question.id]
+              })
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+              this.syncStatus = 'success';
+            } else {
+              throw new Error(result.error);
+            }
+          } catch (err) {
+            console.error('저장 실패:', err);
+            this.syncStatus = 'error';
           }
         },
+
         buttonClass(choice) {
-          if (!this.showAnswer) return this.selectedChoices.includes(choice) ? 'selected' : '';
+          if (!this.showAnswer) {
+            return this.selectedChoices.includes(choice) ? 'selected' : '';
+          }
           const isCorrect = this.question.answers.includes(choice);
           const isSelected = this.selectedChoices.includes(choice);
           if (isCorrect) return 'correct';
           if (isSelected && !isCorrect) return 'incorrect';
           return '';
         },
+
+        // ========================================
+        // 네비게이션
+        // ========================================
         nextQuestion() {
           if (this.current + 1 < this.questions.length) {
             this.current++;
             this.resetState();
+            this.resetTimer();
           }
         },
+
         prevQuestion() {
           if (this.current > 0) {
             this.current--;
             this.resetState();
+            this.resetTimer();
           }
         },
-        goTo(index) {
-          this.current = index;
-          this.resetState();
-        },
+
         jumpTo() {
           if (this.jumpNumber && this.jumpNumber >= 1 && this.jumpNumber <= this.questions.length) {
-            this.goTo(this.jumpNumber - 1);
+            this.current = this.jumpNumber - 1;
+            this.resetState();
+            this.resetTimer();
+            this.jumpNumber = null;
           } else {
-            alert("올바른 문제 번호를 입력하세요.");
+            alert('올바른 문제 번호를 입력하세요.');
           }
         },
+
         resetState() {
           this.selectedChoices = [];
           this.showAnswer = false;
           this.showExplanation = false;
-        },
-        clearWrongAnswers() {
-          if (confirm('틀린 문제 기록을 모두 삭제하시겠습니까?')) {
-            this.wrongAnswers = [];
-            localStorage.removeItem('wrongAnswers');
-            this.viewWrongOnly = false;
-          }
-        }
-      },
-      watch: {
-        viewWrongOnly(newVal) {
-          this.questions = newVal
-            ? this.fullQuestions.filter(q => this.wrongAnswers.includes(q.id))
-            : this.fullQuestions;
-          this.current = 0;
-          this.resetState();
         }
       }
     }).mount('#app');
