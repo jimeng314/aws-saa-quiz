@@ -15,9 +15,8 @@
 // 설정
 // ============================================
 const SPREADSHEET_ID = '146VfL2XxlXdJsUMad4WixRbXVhoINJCCC3XoBdCGwtg';
-const SLACK_WEBHOOK_URL = 'YOUR_SLACK_WEBHOOK_URL_HERE'; // 슬랙 Webhook URL 입력
+const SLACK_WEBHOOK_URL = 'YOUR_SLACK_WEBHOOK_URL_HERE';
 
-// 시트 이름
 const SHEET_USERS = '사용자목록';
 const SHEET_SUMMARY = '전체요약';
 const SHEET_SERVICE_SUMMARY = '서비스별요약';
@@ -27,9 +26,6 @@ const SHEET_SETTINGS = '알림설정';
 // 웹 앱 엔드포인트
 // ============================================
 
-/**
- * GET 요청 처리 - 사용자 목록 조회
- */
 function doGet(e) {
   const action = e.parameter.action;
 
@@ -54,14 +50,19 @@ function doGet(e) {
   }
 }
 
-/**
- * POST 요청 처리 - 퀴즈 결과 저장
- */
 function doPost(e) {
   try {
-    const data = JSON.parse(e.postData.contents);
-    const action = data.action;
+    let data;
 
+    if (e.parameter && e.parameter.payload) {
+      data = JSON.parse(e.parameter.payload);
+    } else if (e.postData && e.postData.contents) {
+      data = JSON.parse(e.postData.contents);
+    } else {
+      return createJsonResponse({ success: false, error: 'No data received' });
+    }
+
+    const action = data.action;
     let result;
 
     switch (action) {
@@ -78,9 +79,6 @@ function doPost(e) {
   }
 }
 
-/**
- * JSON 응답 생성 (CORS 허용)
- */
 function createJsonResponse(data) {
   return ContentService
     .createTextOutput(JSON.stringify(data))
@@ -91,9 +89,6 @@ function createJsonResponse(data) {
 // 사용자 관리
 // ============================================
 
-/**
- * 사용자 목록 조회
- */
 function getUsers() {
   const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
   const sheet = ss.getSheetByName(SHEET_USERS);
@@ -103,11 +98,10 @@ function getUsers() {
   }
 
   const data = sheet.getDataRange().getValues();
-  const headers = data[0];
   const users = [];
 
   for (let i = 1; i < data.length; i++) {
-    if (data[i][0]) { // 이름이 있는 경우만
+    if (data[i][0]) {
       users.push({
         name: data[i][0],
         slackId: data[i][1] || '',
@@ -121,9 +115,6 @@ function getUsers() {
   return { success: true, users: users };
 }
 
-/**
- * 사용자 통계 조회
- */
 function getUserStats(userName) {
   const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
   const sheet = ss.getSheetByName(userName);
@@ -159,11 +150,11 @@ function getUserStats(userName) {
   let wrongCount = 0;
   const solvedSet = new Set();
   const wrongSet = new Set();
-  const questionResults = {}; // 문제별 최종 결과
+  const questionResults = {};
 
   for (let i = 1; i < data.length; i++) {
-    const questionId = data[i][3]; // D열: 문제ID
-    const isCorrect = data[i][9] === '✅'; // J열: 정답여부
+    const questionId = data[i][3];
+    const isCorrect = data[i][9] === '✅';
 
     if (isCorrect) {
       correctCount++;
@@ -175,7 +166,6 @@ function getUserStats(userName) {
     questionResults[questionId] = isCorrect;
   }
 
-  // 최종적으로 틀린 문제 (마지막 시도가 오답인 문제)
   for (const [qId, isCorrect] of Object.entries(questionResults)) {
     if (!isCorrect) {
       wrongSet.add(parseInt(qId));
@@ -198,9 +188,6 @@ function getUserStats(userName) {
 // 퀴즈 결과 저장
 // ============================================
 
-/**
- * 퀴즈 결과 저장
- */
 function saveQuizResult(data) {
   const {
     userName,
@@ -208,10 +195,12 @@ function saveQuizResult(data) {
     mode,
     questionId,
     questionText,
+    choices,
     questionType,
     services,
     selectedAnswers,
     correctAnswers,
+    explanation,
     isCorrect,
     elapsedTime,
     attemptCount
@@ -219,13 +208,11 @@ function saveQuizResult(data) {
 
   const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
 
-  // 사용자 시트 찾기 (없으면 생성)
   let sheet = ss.getSheetByName(userName);
   if (!sheet) {
     sheet = createUserSheet(ss, userName);
   }
 
-  // 시간 정보 계산
   const now = new Date();
   const dayOfWeek = ['일', '월', '화', '수', '목', '금', '토'][now.getDay()];
   const hour = now.getHours();
@@ -235,7 +222,6 @@ function saveQuizResult(data) {
   else if (hour >= 18 && hour < 23) timeSlot = '저녁';
   else timeSlot = '심야';
 
-  // 누적 정답률 계산
   const existingData = sheet.getDataRange().getValues();
   let totalCorrect = isCorrect ? 1 : 0;
   let totalAttempts = 1;
@@ -247,54 +233,49 @@ function saveQuizResult(data) {
 
   const cumulativeRate = Math.round((totalCorrect / totalAttempts) * 100) + '%';
 
-  // 데이터 추가
   const row = [
-    Utilities.formatDate(now, 'Asia/Seoul', 'yyyy-MM-dd HH:mm:ss'), // A: 타임스탬프
-    sessionId,                                                       // B: 세션ID
-    mode,                                                            // C: 풀이모드
-    questionId,                                                      // D: 문제ID
-    questionText.substring(0, 100) + (questionText.length > 100 ? '...' : ''), // E: 문제내용
-    questionType,                                                    // F: 문제유형
-    services.join(', '),                                            // G: AWS서비스
-    selectedAnswers.join(', '),                                     // H: 선택한 답
-    correctAnswers.join(', '),                                      // I: 정답
-    isCorrect ? '✅' : '❌',                                         // J: 정답여부
-    elapsedTime,                                                     // K: 소요시간(초)
-    attemptCount,                                                    // L: 시도횟수
-    dayOfWeek,                                                       // M: 요일
-    timeSlot,                                                        // N: 시간대
-    cumulativeRate                                                   // O: 누적정답률
+    Utilities.formatDate(now, 'Asia/Seoul', 'yyyy-MM-dd HH:mm:ss'),
+    sessionId,
+    mode,
+    questionId,
+    questionText,
+    choices || '',
+    selectedAnswers.join(', '),
+    correctAnswers.join(', '),
+    explanation || '',
+    isCorrect ? '✅' : '❌',
+    questionType,
+    services.join(', '),
+    elapsedTime,
+    attemptCount,
+    dayOfWeek,
+    timeSlot,
+    cumulativeRate
   ];
 
   sheet.appendRow(row);
-
-  // 요약 시트 업데이트
   updateSummarySheets(ss);
 
   return { success: true, message: '저장 완료' };
 }
 
-/**
- * 사용자 시트 생성
- */
 function createUserSheet(ss, userName) {
   const sheet = ss.insertSheet(userName);
 
-  // 헤더 추가
   const headers = [
     '타임스탬프', '세션ID', '풀이모드', '문제ID', '문제내용',
-    '문제유형', 'AWS서비스', '선택한 답', '정답', '정답여부',
-    '소요시간(초)', '시도횟수', '요일', '시간대', '누적정답률'
+    '선지', '선택한 답', '정답', '해설', '정답여부',
+    '문제유형', 'AWS서비스', '소요시간(초)', '시도횟수', '요일', '시간대', '누적정답률'
   ];
 
   sheet.appendRow(headers);
   sheet.getRange(1, 1, 1, headers.length).setFontWeight('bold');
   sheet.setFrozenRows(1);
 
-  // 열 너비 조정
-  sheet.setColumnWidth(1, 150); // 타임스탬프
-  sheet.setColumnWidth(5, 300); // 문제내용
-  sheet.setColumnWidth(7, 150); // AWS서비스
+  sheet.setColumnWidth(1, 150);
+  sheet.setColumnWidth(5, 300);
+  sheet.setColumnWidth(6, 400);
+  sheet.setColumnWidth(9, 400);
 
   return sheet;
 }
@@ -303,30 +284,22 @@ function createUserSheet(ss, userName) {
 // 요약 시트 업데이트
 // ============================================
 
-/**
- * 전체요약 및 서비스별요약 시트 업데이트
- */
 function updateSummarySheets(ss) {
   updateTotalSummary(ss);
   updateServiceSummary(ss);
 }
 
-/**
- * 전체요약 시트 업데이트
- */
 function updateTotalSummary(ss) {
   let sheet = ss.getSheetByName(SHEET_SUMMARY);
   if (!sheet) {
     sheet = ss.insertSheet(SHEET_SUMMARY);
   }
 
-  // 헤더
   const headers = [
     '이름', '푼 문제', '총 시도', '1차 정답률', '시도 정답률',
     '문제 정답률', '평균 시도', '미해결', '평균 소요시간', '최근 활동'
   ];
 
-  // 사용자 목록 가져오기
   const usersResult = getUsers();
   if (!usersResult.success) return;
 
@@ -339,7 +312,6 @@ function updateTotalSummary(ss) {
     const data = userSheet.getDataRange().getValues();
     if (data.length <= 1) continue;
 
-    // 통계 계산
     const stats = calculateUserStats(data);
 
     summaryData.push([
@@ -356,7 +328,6 @@ function updateTotalSummary(ss) {
     ]);
   }
 
-  // 시트 초기화 및 데이터 쓰기
   sheet.clear();
   if (summaryData.length > 0) {
     sheet.getRange(1, 1, summaryData.length, headers.length).setValues(summaryData);
@@ -365,11 +336,8 @@ function updateTotalSummary(ss) {
   }
 }
 
-/**
- * 사용자 통계 계산
- */
 function calculateUserStats(data) {
-  const questionMap = {}; // 문제별 정보
+  const questionMap = {};
   let totalCorrect = 0;
   let totalTime = 0;
   let totalAttempts = data.length - 1;
@@ -377,7 +345,7 @@ function calculateUserStats(data) {
   for (let i = 1; i < data.length; i++) {
     const questionId = data[i][3];
     const isCorrect = data[i][9] === '✅';
-    const elapsedTime = parseInt(data[i][10]) || 0;
+    const elapsedTime = parseInt(data[i][12]) || 0;
 
     if (!questionMap[questionId]) {
       questionMap[questionId] = {
@@ -408,7 +376,6 @@ function calculateUserStats(data) {
 
   const unresolvedCount = solvedCount - resolvedCount;
 
-  // 마지막 활동 날짜
   const lastActivity = data.length > 1 ? data[data.length - 1][0] : '';
   const lastActivityStr = lastActivity ?
     Utilities.formatDate(new Date(lastActivity), 'Asia/Seoul', 'yyyy-MM-dd') : '-';
@@ -426,9 +393,6 @@ function calculateUserStats(data) {
   };
 }
 
-/**
- * 서비스별요약 시트 업데이트
- */
 function updateServiceSummary(ss) {
   let sheet = ss.getSheetByName(SHEET_SERVICE_SUMMARY);
   if (!sheet) {
@@ -437,7 +401,6 @@ function updateServiceSummary(ss) {
 
   const headers = ['이름', '서비스', '문제 수', '시도 수', '1차 정답률', '최종 정답률', '상태'];
 
-  // 사용자 목록 가져오기
   const usersResult = getUsers();
   if (!usersResult.success) return;
 
@@ -450,7 +413,6 @@ function updateServiceSummary(ss) {
     const data = userSheet.getDataRange().getValues();
     if (data.length <= 1) continue;
 
-    // 서비스별 통계 계산
     const serviceStats = calculateServiceStats(data);
 
     for (const [service, stats] of Object.entries(serviceStats)) {
@@ -469,7 +431,6 @@ function updateServiceSummary(ss) {
     }
   }
 
-  // 시트 초기화 및 데이터 쓰기
   sheet.clear();
   if (summaryData.length > 0) {
     sheet.getRange(1, 1, summaryData.length, headers.length).setValues(summaryData);
@@ -478,14 +439,11 @@ function updateServiceSummary(ss) {
   }
 }
 
-/**
- * 서비스별 통계 계산
- */
 function calculateServiceStats(data) {
   const serviceMap = {};
 
   for (let i = 1; i < data.length; i++) {
-    const services = (data[i][6] || '').split(', ');
+    const services = (data[i][11] || '').split(', ');
     const questionId = data[i][3];
     const isCorrect = data[i][9] === '✅';
 
@@ -518,15 +476,15 @@ function calculateServiceStats(data) {
 
   const result = {};
 
-  for (const [service, data] of Object.entries(serviceMap)) {
-    const questions = Object.values(data.questions);
+  for (const [service, svcData] of Object.entries(serviceMap)) {
+    const questions = Object.values(svcData.questions);
     const questionCount = questions.length;
     const firstTryCorrect = questions.filter(q => q.firstTryCorrect).length;
     const finalCorrect = questions.filter(q => q.lastCorrect).length;
 
     result[service] = {
       questionCount: questionCount,
-      attemptCount: data.attemptCount,
+      attemptCount: svcData.attemptCount,
       firstTryRate: questionCount > 0 ? Math.round((firstTryCorrect / questionCount) * 100) + '%' : '0%',
       finalRate: questionCount > 0 ? Math.round((finalCorrect / questionCount) * 100) + '%' : '0%'
     };
@@ -539,9 +497,6 @@ function calculateServiceStats(data) {
 // 슬랙 알림
 // ============================================
 
-/**
- * 주간 리포트 발송 (매주 월요일 오전 10시 트리거 설정)
- */
 function sendWeeklyReport() {
   if (SLACK_WEBHOOK_URL === 'YOUR_SLACK_WEBHOOK_URL_HERE') {
     console.log('슬랙 Webhook URL이 설정되지 않았습니다.');
@@ -552,7 +507,6 @@ function sendWeeklyReport() {
   const usersResult = getUsers();
   if (!usersResult.success) return;
 
-  // 주간 통계 수집
   const weeklyStats = [];
   const oneWeekAgo = new Date();
   oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
@@ -573,8 +527,7 @@ function sendWeeklyReport() {
         if (data[i][9] === '✅') {
           weeklyCorrect++;
         } else {
-          // 틀린 서비스 카운트
-          const services = (data[i][6] || '').split(', ');
+          const services = (data[i][11] || '').split(', ');
           for (const s of services) {
             if (s) servicesWrong[s] = (servicesWrong[s] || 0) + 1;
           }
@@ -582,7 +535,6 @@ function sendWeeklyReport() {
       }
     }
 
-    // 가장 취약한 서비스
     let weakestService = '-';
     let maxWrong = 0;
     for (const [s, count] of Object.entries(servicesWrong)) {
@@ -603,10 +555,8 @@ function sendWeeklyReport() {
     }
   }
 
-  // 정렬 (문제 수 기준)
   weeklyStats.sort((a, b) => b.attempts - a.attempts);
 
-  // 슬랙 메시지 생성
   const today = new Date();
   const weekAgo = new Date(today);
   weekAgo.setDate(weekAgo.getDate() - 7);
@@ -617,7 +567,6 @@ function sendWeeklyReport() {
 
   if (weeklyStats.length > 0) {
     message += `🏆 *이번주 MVP*: ${weeklyStats[0].name} (${weeklyStats[0].attempts}문제, 정답률 ${weeklyStats[0].rate}%)\n\n`;
-
     message += `| 이름 | 푼 문제 | 정답률 | 취약 서비스 |\n`;
     message += `|------|--------|-------|------------|\n`;
 
@@ -625,7 +574,6 @@ function sendWeeklyReport() {
       message += `| ${stat.name} | ${stat.attempts} | ${stat.rate}% | ${stat.weakestService} |\n`;
     }
 
-    // 공통 취약 서비스 찾기
     const allWeak = weeklyStats.map(s => s.weakestService).filter(s => s !== '-');
     const weakCount = {};
     for (const s of allWeak) {
@@ -645,9 +593,6 @@ function sendWeeklyReport() {
   sendSlackMessage(message);
 }
 
-/**
- * 격려 알림 발송 (매일 오전 9시 트리거 설정)
- */
 function sendEncouragementAlerts() {
   if (SLACK_WEBHOOK_URL === 'YOUR_SLACK_WEBHOOK_URL_HERE') {
     console.log('슬랙 Webhook URL이 설정되지 않았습니다.');
@@ -677,7 +622,6 @@ function sendEncouragementAlerts() {
       }
     }
 
-    // 3일 이상 미접속 또는 기록 없음
     if (!lastActivity || lastActivity < threeDaysAgo) {
       const daysSince = lastActivity ?
         Math.floor((new Date() - lastActivity) / (1000 * 60 * 60 * 24)) : '?';
@@ -695,9 +639,6 @@ function sendEncouragementAlerts() {
   }
 }
 
-/**
- * 슬랙 메시지 발송
- */
 function sendSlackMessage(message) {
   const payload = {
     text: message,
@@ -719,27 +660,21 @@ function sendSlackMessage(message) {
 }
 
 // ============================================
-// 트리거 설정 함수 (최초 1회 실행)
+// 트리거 및 초기화
 // ============================================
 
-/**
- * 트리거 설정 - Apps Script 에디터에서 직접 실행
- */
 function setupTriggers() {
-  // 기존 트리거 삭제
   const triggers = ScriptApp.getProjectTriggers();
   for (const trigger of triggers) {
     ScriptApp.deleteTrigger(trigger);
   }
 
-  // 주간 리포트: 매주 월요일 오전 10시
   ScriptApp.newTrigger('sendWeeklyReport')
     .timeBased()
     .onWeekDay(ScriptApp.WeekDay.MONDAY)
     .atHour(10)
     .create();
 
-  // 격려 알림: 매일 오전 9시
   ScriptApp.newTrigger('sendEncouragementAlerts')
     .timeBased()
     .everyDays(1)
@@ -749,17 +684,9 @@ function setupTriggers() {
   console.log('트리거 설정 완료');
 }
 
-// ============================================
-// 초기 설정 함수
-// ============================================
-
-/**
- * 초기 시트 구조 생성 - 최초 1회 실행
- */
 function initializeSheets() {
   const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
 
-  // 사용자목록 시트
   let usersSheet = ss.getSheetByName(SHEET_USERS);
   if (!usersSheet) {
     usersSheet = ss.insertSheet(SHEET_USERS);
@@ -768,7 +695,6 @@ function initializeSheets() {
     usersSheet.setFrozenRows(1);
   }
 
-  // 전체요약 시트
   let summarySheet = ss.getSheetByName(SHEET_SUMMARY);
   if (!summarySheet) {
     summarySheet = ss.insertSheet(SHEET_SUMMARY);
@@ -779,7 +705,6 @@ function initializeSheets() {
     summarySheet.setFrozenRows(1);
   }
 
-  // 서비스별요약 시트
   let serviceSheet = ss.getSheetByName(SHEET_SERVICE_SUMMARY);
   if (!serviceSheet) {
     serviceSheet = ss.insertSheet(SHEET_SERVICE_SUMMARY);
