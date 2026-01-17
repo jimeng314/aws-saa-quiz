@@ -1076,6 +1076,14 @@
           this.syncStatus = 'syncing';
 
           try {
+            // 선지 포맷팅: "A. 내용 / B. 내용 / ..."
+            const choicesText = Object.entries(this.question.choices)
+              .map(([key, val]) => `${key}. ${val}`)
+              .join(' / ');
+
+            // 해설 포맷팅
+            const explanationText = (this.question.explanations || []).join('\n');
+
             const payload = {
               action: 'saveQuizResult',
               userName: this.currentUser,
@@ -1083,10 +1091,12 @@
               mode: this.modeNames[this.currentMode],
               questionId: this.question.id,
               questionText: this.question.question,
+              choices: choicesText,
               questionType: this.question.answers.length > 1 ? '복수선택' : '단일선택',
               services: this.question.services || [],
               selectedAnswers: this.selectedChoices,
               correctAnswers: this.question.answers,
+              explanation: explanationText,
               isCorrect: isCorrect,
               elapsedTime: this.elapsedTime,
               attemptCount: this.attemptCounts[this.question.id]
