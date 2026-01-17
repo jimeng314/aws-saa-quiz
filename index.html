@@ -1092,14 +1092,15 @@
               attemptCount: this.attemptCounts[this.question.id]
             };
 
-            const response = await fetch(API_URL, {
+            // Google Apps Script는 form 데이터로 전송해야 CORS 우회 가능
+            const formData = new FormData();
+            formData.append('payload', JSON.stringify(payload));
+
+            await fetch(API_URL, {
               method: 'POST',
-              mode: 'no-cors',
-              headers: { 'Content-Type': 'text/plain' },
-              body: JSON.stringify(payload)
+              body: formData
             });
 
-            // no-cors 모드에서는 응답을 읽을 수 없으므로 성공으로 간주
             this.syncStatus = 'success';
           } catch (err) {
             console.error('저장 실패:', err);
