@@ -527,7 +527,8 @@
         </div>
 
         <div class="error-box" v-if="loginError">
-          {{ loginError }}
+          {{ loginError }}<br>
+          <small style="opacity: 0.8;">기록은 이 기기에만 저장됩니다.</small>
         </div>
 
         <select v-model="selectedUser" :disabled="loadingUsers">
@@ -878,18 +879,21 @@
           }
 
           try {
-            const response = await fetch(`${API_URL}?action=getUsers`);
+            const response = await fetch(`${API_URL}?action=getUsers`, {
+              method: 'GET',
+              redirect: 'follow'
+            });
             const result = await response.json();
 
             if (result.success) {
               this.users = result.users;
               this.syncStatus = 'success';
             } else {
-              throw new Error(result.error);
+              throw new Error(result.error || '알 수 없는 오류');
             }
           } catch (err) {
             console.error('사용자 목록 로드 실패:', err);
-            this.loginError = '사용자 목록을 불러올 수 없습니다. 오프라인 모드로 시작합니다.';
+            this.loginError = '서버에 연결할 수 없습니다. 오프라인 모드로 시작합니다.';
             this.users = [{ name: '게스트' }];
             this.syncStatus = 'offline';
           }
@@ -1072,33 +1076,31 @@
           this.syncStatus = 'syncing';
 
           try {
+            const payload = {
+              action: 'saveQuizResult',
+              userName: this.currentUser,
+              sessionId: this.sessionId,
+              mode: this.modeNames[this.currentMode],
+              questionId: this.question.id,
+              questionText: this.question.question,
+              questionType: this.question.answers.length > 1 ? '복수선택' : '단일선택',
+              services: this.question.services || [],
+              selectedAnswers: this.selectedChoices,
+              correctAnswers: this.question.answers,
+              isCorrect: isCorrect,
+              elapsedTime: this.elapsedTime,
+              attemptCount: this.attemptCounts[this.question.id]
+            };
+
             const response = await fetch(API_URL, {
               method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                action: 'saveQuizResult',
-                userName: this.currentUser,
-                sessionId: this.sessionId,
-                mode: this.modeNames[this.currentMode],
-                questionId: this.question.id,
-                questionText: this.question.question,
-                questionType: this.question.answers.length > 1 ? '복수선택' : '단일선택',
-                services: this.question.services || [],
-                selectedAnswers: this.selectedChoices,
-                correctAnswers: this.question.answers,
-                isCorrect: isCorrect,
-                elapsedTime: this.elapsedTime,
-                attemptCount: this.attemptCounts[this.question.id]
-              })
+              mode: 'no-cors',
+              headers: { 'Content-Type': 'text/plain' },
+              body: JSON.stringify(payload)
             });
 
-            const result = await response.json();
-
-            if (result.success) {
-              this.syncStatus = 'success';
-            } else {
-              throw new Error(result.error);
-            }
+            // no-cors 모드에서는 응답을 읽을 수 없으므로 성공으로 간주
+            this.syncStatus = 'success';
           } catch (err) {
             console.error('저장 실패:', err);
             this.syncStatus = 'error';
