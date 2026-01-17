@@ -279,13 +279,13 @@ function createUserSheet(ss, userName) {
   sheet.setColumnWidth(9, 400);   // 해설
   sheet.setColumnWidth(12, 150);  // AWS서비스
 
-  // 문제내용(E), 선지(F), 해설(I), AWS서비스(L) 열 설정
-  // 텍스트 줄바꿈 + 세로 맞춤 위쪽
-  const colSettings = [5, 6, 9, 12]; // E, F, I, L 열
-  for (const col of colSettings) {
-    sheet.getRange(1, col, 1000, 1)
-      .setWrap(true)
-      .setVerticalAlignment('top');
+  // 전체 열 세로 맞춤 위쪽
+  sheet.getRange(1, 1, 1000, headers.length).setVerticalAlignment('top');
+
+  // 문제내용(E), 선지(F), 해설(I), AWS서비스(L) 열 텍스트 줄바꿈 추가
+  const wrapCols = [5, 6, 9, 12];
+  for (const col of wrapCols) {
+    sheet.getRange(1, col, 1000, 1).setWrap(true);
   }
 
   return sheet;
