@@ -1425,7 +1425,10 @@
           examAnswers: {}, // { questionId: selectedChoices }
           examStartTime: null,
           showExamResult: false,
-          examResult: null
+          examResult: null,
+
+          // 서버 동기화 타이머
+          syncTimer: null
         };
       },
 
@@ -1640,13 +1643,10 @@
         },
 
         async loadUserStats() {
-          // 오답노트 데이터 로드
-          this.loadWrongNoteData();
-          // 북마크 로드
-          this.loadBookmarks();
-
           if (API_URL === 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE') {
-            // 로컬 스토리지에서 로드
+            // 로컬 모드: LocalStorage에서 로드
+            this.loadWrongNoteData();
+            this.loadBookmarks();
             const saved = localStorage.getItem(`aws-quiz-stats-${this.currentUser}`);
             if (saved) {
               const stats = JSON.parse(saved);
@@ -1657,6 +1657,7 @@
             return;
           }
 
+          // 서버 모드: API에서 로드
           try {
             const response = await fetch(`${API_URL}?action=getUserStats&userName=${encodeURIComponent(this.currentUser)}`);
             const result = await response.json();
@@ -1665,6 +1666,21 @@
               this.solvedQuestions = result.stats.solvedQuestions || [];
               this.wrongQuestions = result.stats.wrongQuestions || [];
 
+              // 서버에서 북마크/오답노트 로드 (있으면 사용, 없으면 로컬 사용)
+              if (result.stats.bookmarks && result.stats.bookmarks.length > 0) {
+                this.bookmarks = result.stats.bookmarks;
+                this.saveBookmarks(); // 로컬에도 백업
+              } else {
+                this.loadBookmarks(); // 로컬에서 로드
+              }
+
+              if (result.stats.wrongNoteData && Object.keys(result.stats.wrongNoteData).length > 0) {
+                this.wrongNoteData = result.stats.wrongNoteData;
+                this.saveWrongNoteData(); // 로컬에도 백업
+              } else {
+                this.loadWrongNoteData(); // 로컬에서 로드
+              }
+
               // 시도 횟수 계산
               this.solvedQuestions.forEach(id => {
                 this.attemptCounts[id] = (this.attemptCounts[id] || 0) + 1;
@@ -1672,6 +1688,9 @@
             }
           } catch (err) {
             console.error('사용자 통계 로드 실패:', err);
+            // 실패 시 로컬에서 로드
+            this.loadWrongNoteData();
+            this.loadBookmarks();
           }
         },
 
@@ -1978,11 +1997,17 @@
             this.wrongNoteData[questionId].lastDate = today;
           }
 
+          this.saveWrongNoteData();
+        },
+
+        saveWrongNoteData() {
           // 로컬 스토리지에 저장
           localStorage.setItem(
             `aws-quiz-wrongnote-${this.currentUser}`,
             JSON.stringify(this.wrongNoteData)
           );
+          // 서버 동기화
+          this.syncUserDataToServer();
         },
 
         loadWrongNoteData() {
@@ -2009,6 +2034,8 @@
             `aws-quiz-bookmarks-${this.currentUser}`,
             JSON.stringify(this.bookmarks)
           );
+          // 서버 동기화
+          this.syncUserDataToServer();
         },
 
         loadBookmarks() {
@@ -2016,6 +2043,37 @@
           if (saved) {
             this.bookmarks = JSON.parse(saved);
           }
+        },
+
+        // 서버에 북마크/오답노트 동기화 (디바운스 적용)
+        syncUserDataToServer() {
+          if (API_URL === 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE') return;
+
+          // 이전 타이머 취소 (디바운스)
+          if (this.syncTimer) {
+            clearTimeout(this.syncTimer);
+          }
+
+          // 2초 후 동기화 (연속 변경 시 한번만)
+          this.syncTimer = setTimeout(async () => {
+            try {
+              const formData = new FormData();
+              formData.append('payload', JSON.stringify({
+                action: 'saveUserData',
+                userName: this.currentUser,
+                bookmarks: this.bookmarks,
+                wrongNoteData: this.wrongNoteData
+              }));
+
+              await fetch(API_URL, {
+                method: 'POST',
+                body: formData
+              });
+              console.log('서버 동기화 완료');
+            } catch (err) {
+              console.error('서버 동기화 실패:', err);
+            }
+          }, 2000);
         },
 
         // ========================================
