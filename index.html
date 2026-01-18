@@ -1189,8 +1189,9 @@
 
         formatTime(seconds) {
           const min = Math.floor(seconds / 60).toString().padStart(2, '0');
-          const sec = (seconds % 60).toString().padStart(2, '0');
-          return `${min}:${sec}`;
+          const sec = Math.floor(seconds % 60).toString().padStart(2, '0');
+          const ms = Math.floor((seconds % 1) * 100).toString().padStart(2, '0');
+          return `${min}:${sec}.${ms}`;
         },
 
         shuffleArray(array) {
@@ -1323,8 +1324,8 @@
           this.questionStartTime = Date.now();
           this.elapsedTime = 0;
           this.timerInterval = setInterval(() => {
-            this.elapsedTime = Math.floor((Date.now() - this.questionStartTime) / 1000);
-          }, 1000);
+            this.elapsedTime = (Date.now() - this.questionStartTime) / 1000;
+          }, 100);
         },
 
         stopTimer() {
