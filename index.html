@@ -687,6 +687,206 @@
       margin-bottom: 1rem;
     }
 
+    /* 북마크 버튼 */
+    .bookmark-btn {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      padding: 0.25rem;
+      transition: transform 0.2s ease;
+    }
+
+    .bookmark-btn:hover {
+      transform: scale(1.2);
+    }
+
+    .bookmark-btn.active {
+      color: #f59e0b;
+    }
+
+    .question-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 1rem;
+    }
+
+    /* 서비스별 풀기 */
+    .service-select-panel {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .service-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 0.5rem;
+      margin-top: 1rem;
+    }
+
+    .service-select-btn {
+      padding: 0.5rem 0.75rem;
+      border: 2px solid #e5e7eb;
+      border-radius: 8px;
+      background: white;
+      cursor: pointer;
+      font-size: 0.8rem;
+      transition: all 0.2s ease;
+      font-family: inherit;
+      text-align: left;
+    }
+
+    .service-select-btn:hover {
+      border-color: #667eea;
+      background: #f5f3ff;
+    }
+
+    .service-select-btn.selected {
+      border-color: #667eea;
+      background: #667eea;
+      color: white;
+    }
+
+    .service-select-btn .svc-count {
+      font-size: 0.7rem;
+      opacity: 0.7;
+    }
+
+    /* 모의고사 모드 */
+    .exam-mode-banner {
+      background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
+      color: white;
+      padding: 1rem 1.5rem;
+      border-radius: 12px;
+      margin-bottom: 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .exam-info {
+      display: flex;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .exam-info-item {
+      text-align: center;
+    }
+
+    .exam-info-item .label {
+      font-size: 0.75rem;
+      opacity: 0.8;
+    }
+
+    .exam-info-item .value {
+      font-size: 1.2rem;
+      font-weight: 700;
+    }
+
+    .exam-end-btn {
+      background: rgba(255,255,255,0.2);
+      border: 1px solid rgba(255,255,255,0.3);
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 0.9rem;
+    }
+
+    .exam-end-btn:hover {
+      background: rgba(255,255,255,0.3);
+    }
+
+    /* 모의고사 결과 */
+    .exam-result {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      padding: 2rem;
+      text-align: center;
+    }
+
+    .exam-result h2 {
+      font-size: 1.5rem;
+      margin-bottom: 1.5rem;
+      color: #1f2937;
+    }
+
+    .exam-result-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .exam-result-stat {
+      background: #f9fafb;
+      padding: 1rem;
+      border-radius: 8px;
+    }
+
+    .exam-result-stat .label {
+      font-size: 0.8rem;
+      color: #6b7280;
+    }
+
+    .exam-result-stat .value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #667eea;
+    }
+
+    .exam-result-stat .value.pass {
+      color: #10b981;
+    }
+
+    .exam-result-stat .value.fail {
+      color: #ef4444;
+    }
+
+    .extra-btns {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .extra-btn {
+      padding: 0.6rem 1rem;
+      border: 2px solid #e5e7eb;
+      border-radius: 8px;
+      background: white;
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-family: inherit;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .extra-btn:hover {
+      border-color: #667eea;
+      background: #f5f3ff;
+    }
+
+    .extra-btn.exam {
+      border-color: #dc2626;
+      color: #dc2626;
+    }
+
+    .extra-btn.exam:hover {
+      background: #fef2f2;
+    }
+
     @media (max-width: 640px) {
       .header h1 {
         font-size: 1.3rem;
@@ -744,6 +944,23 @@
       .solve-btn {
         width: 100%;
         text-align: center;
+      }
+
+      .service-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .exam-mode-banner {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .extra-btns {
+        flex-direction: column;
+      }
+
+      .extra-btn {
+        justify-content: center;
       }
     }
   </style>
@@ -841,12 +1058,103 @@
               미풀이
               <span class="count">{{ unsolvedQuestions.length }}</span>
             </button>
+            <button
+              class="mode-btn"
+              :class="{ active: currentMode === 'bookmark' }"
+              @click="setMode('bookmark')"
+            >
+              북마크
+              <span class="count">{{ bookmarks.length }}</span>
+            </button>
           </div>
 
-          <!-- 오답노트 버튼 -->
-          <button class="wrong-note-btn" @click="showWrongNotes = true" v-if="wrongQuestions.length > 0">
-            <span>📋</span> 오답노트 ({{ wrongQuestions.length }}문제)
-          </button>
+          <!-- 추가 버튼들 -->
+          <div class="extra-btns">
+            <button class="extra-btn" @click="showServiceSelect = true">
+              <span>🏷️</span> 서비스별 풀기
+            </button>
+            <button class="extra-btn exam" @click="startExamMode">
+              <span>📝</span> 모의고사 (65문제 / 130분)
+            </button>
+            <button class="extra-btn" @click="showWrongNotes = true" v-if="wrongQuestions.length > 0">
+              <span>📋</span> 오답노트 ({{ wrongQuestions.length }})
+            </button>
+          </div>
+        </div>
+
+        <!-- 서비스별 풀기 선택 -->
+        <div class="service-select-panel" v-if="showServiceSelect">
+          <div class="wrong-notes-header">
+            <button class="back-btn" @click="showServiceSelect = false">←</button>
+            <h3>🏷️ 서비스별 풀기</h3>
+          </div>
+          <p style="color: #6b7280; font-size: 0.9rem;">원하는 AWS 서비스를 선택하세요</p>
+          <div class="service-grid">
+            <button
+              v-for="svc in allServices"
+              :key="svc.name"
+              class="service-select-btn"
+              @click="startServiceMode(svc.name)"
+            >
+              {{ svc.name }}
+              <span class="svc-count">({{ svc.count }}문제)</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 모의고사 배너 -->
+        <div class="exam-mode-banner" v-if="isExamMode && !showExamResult">
+          <div style="font-weight: 600;">📝 모의고사 진행 중</div>
+          <div class="exam-info">
+            <div class="exam-info-item">
+              <div class="label">남은 시간</div>
+              <div class="value">{{ examTimeFormatted }}</div>
+            </div>
+            <div class="exam-info-item">
+              <div class="label">진행</div>
+              <div class="value">{{ examProgress }} / 65</div>
+            </div>
+          </div>
+          <button class="exam-end-btn" @click="endExamMode">시험 종료</button>
+        </div>
+
+        <!-- 모의고사 결과 -->
+        <div class="exam-result" v-if="showExamResult">
+          <h2>📝 모의고사 결과</h2>
+          <div class="exam-result-stats">
+            <div class="exam-result-stat">
+              <div class="label">총 문제</div>
+              <div class="value">65</div>
+            </div>
+            <div class="exam-result-stat">
+              <div class="label">정답</div>
+              <div class="value">{{ examResult.correct }}</div>
+            </div>
+            <div class="exam-result-stat">
+              <div class="label">오답</div>
+              <div class="value" style="color: #ef4444;">{{ examResult.wrong }}</div>
+            </div>
+            <div class="exam-result-stat">
+              <div class="label">정답률</div>
+              <div class="value" :class="examResult.rate >= 72 ? 'pass' : 'fail'">
+                {{ examResult.rate }}%
+              </div>
+            </div>
+            <div class="exam-result-stat">
+              <div class="label">소요 시간</div>
+              <div class="value">{{ examResult.timeUsed }}</div>
+            </div>
+            <div class="exam-result-stat">
+              <div class="label">합격 여부</div>
+              <div class="value" :class="examResult.rate >= 72 ? 'pass' : 'fail'">
+                {{ examResult.rate >= 72 ? '합격' : '불합격' }}
+              </div>
+            </div>
+          </div>
+          <p style="color: #6b7280; margin-bottom: 1rem;">
+            AWS SAA-C03 합격 기준: 720점 / 1000점 (약 72%)
+          </p>
+          <button class="btn" @click="closeExamResult">확인</button>
         </div>
 
         <!-- 오답노트 화면 -->
@@ -938,11 +1246,21 @@
           </div>
 
           <div v-if="question">
-            <!-- AWS 서비스 태그 -->
-            <div class="service-tags" v-if="question.services && question.services.length">
-              <span class="service-tag" v-for="service in question.services" :key="service">
-                {{ service }}
-              </span>
+            <!-- 문제 헤더 (서비스 태그 + 북마크) -->
+            <div class="question-header">
+              <div class="service-tags" v-if="question.services && question.services.length">
+                <span class="service-tag" v-for="service in question.services" :key="service">
+                  {{ service }}
+                </span>
+              </div>
+              <button
+                class="bookmark-btn"
+                :class="{ active: bookmarks.includes(question.id) }"
+                @click="toggleBookmark(question.id)"
+                :title="bookmarks.includes(question.id) ? '북마크 해제' : '북마크 추가'"
+              >
+                {{ bookmarks.includes(question.id) ? '★' : '☆' }}
+              </button>
             </div>
 
             <p class="question">{{ question.question }}</p>
@@ -958,15 +1276,26 @@
               </button>
             </div>
 
-            <div v-if="showAnswer" class="answer-section">
+            <!-- 일반 모드: 정답/해설 -->
+            <div v-if="showAnswer && !isExamMode" class="answer-section">
               <p><strong>정답:</strong> {{ question.answers.join(', ') }}</p>
               <button class="btn" @click="showExplanation = true" v-if="!showExplanation">
                 해설 보기
               </button>
             </div>
 
-            <div v-if="showExplanation" class="explanation">
+            <div v-if="showExplanation && !isExamMode" class="explanation">
               <p v-for="(exp, i) in question.explanations" :key="i">{{ exp }}</p>
+            </div>
+
+            <!-- 모의고사 모드: 응답 상태 표시 -->
+            <div v-if="isExamMode" style="margin-top: 1rem; padding: 0.75rem; background: #f0fdf4; border-radius: 8px; text-align: center;">
+              <span v-if="examAnswers[question.id]" style="color: #10b981;">
+                ✓ 응답 완료 ({{ examAnswers[question.id].join(', ') }})
+              </span>
+              <span v-else style="color: #6b7280;">
+                아직 응답하지 않았습니다
+              </span>
             </div>
 
             <div class="navigation">
@@ -976,14 +1305,19 @@
               <button class="btn" @click="nextQuestion" :disabled="current + 1 === questions.length">
                 다음 문제
               </button>
+              <button v-if="isExamMode" class="btn" style="background: #dc2626;" @click="endExamMode">
+                시험 종료
+              </button>
             </div>
           </div>
         </div>
 
         <!-- 문제 없음 -->
-        <div class="quiz-container" v-else>
+        <div class="quiz-container" v-else-if="!showServiceSelect && !showWrongNotes && !showExamResult">
           <p style="text-align: center; color: #6b7280; padding: 2rem;">
-            {{ currentMode === 'wrong' ? '틀린 문제가 없습니다!' : '미풀이 문제가 없습니다!' }}
+            {{ currentMode === 'wrong' ? '틀린 문제가 없습니다!' :
+               currentMode === 'bookmark' ? '북마크한 문제가 없습니다!' :
+               currentMode === 'unsolved' ? '미풀이 문제가 없습니다!' : '문제가 없습니다.' }}
           </p>
         </div>
 
@@ -1052,7 +1386,10 @@
             'sequential': '순차',
             'random': '랜덤',
             'wrong': '오답복습',
-            'unsolved': '미풀이'
+            'unsolved': '미풀이',
+            'bookmark': '북마크',
+            'service': '서비스별',
+            'exam': '모의고사'
           },
 
           // 타이머
@@ -1071,7 +1408,24 @@
           showWrongNotes: false,
           wrongNoteData: {}, // { questionId: { count: 오답횟수, lastDate: 최근오답일 } }
           wrongNoteFilter: 'all', // 'all' 또는 서비스명
-          wrongNoteSort: 'count' // 'count', 'recent', 'id'
+          wrongNoteSort: 'count', // 'count', 'recent', 'id'
+
+          // 북마크
+          bookmarks: [], // 북마크된 문제 ID 배열
+
+          // 서비스별 풀기
+          showServiceSelect: false,
+          selectedService: null,
+
+          // 모의고사 모드
+          isExamMode: false,
+          examTimeLimit: 130 * 60, // 130분 (초)
+          examTimeRemaining: 130 * 60,
+          examTimerInterval: null,
+          examAnswers: {}, // { questionId: selectedChoices }
+          examStartTime: null,
+          showExamResult: false,
+          examResult: null
         };
       },
 
@@ -1158,6 +1512,38 @@
               }
             });
           return Array.from(services).sort();
+        },
+
+        // 북마크된 문제
+        bookmarkedQuestions() {
+          return this.fullQuestions.filter(q => this.bookmarks.includes(q.id));
+        },
+
+        // 전체 서비스 목록 (문제 수 포함)
+        allServices() {
+          const serviceCount = {};
+          this.fullQuestions.forEach(q => {
+            if (q.services) {
+              q.services.forEach(s => {
+                serviceCount[s] = (serviceCount[s] || 0) + 1;
+              });
+            }
+          });
+          return Object.entries(serviceCount)
+            .sort((a, b) => b[1] - a[1])
+            .map(([name, count]) => ({ name, count }));
+        },
+
+        // 모의고사 시간 포맷
+        examTimeFormatted() {
+          const min = Math.floor(this.examTimeRemaining / 60);
+          const sec = this.examTimeRemaining % 60;
+          return `${min.toString().padStart(2, '0')}:${sec.toString().padStart(2, '0')}`;
+        },
+
+        // 모의고사 진행률
+        examProgress() {
+          return Object.keys(this.examAnswers).length;
         }
       },
 
@@ -1256,6 +1642,8 @@
         async loadUserStats() {
           // 오답노트 데이터 로드
           this.loadWrongNoteData();
+          // 북마크 로드
+          this.loadBookmarks();
 
           if (API_URL === 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE') {
             // 로컬 스토리지에서 로드
@@ -1349,6 +1737,8 @@
           this.currentMode = mode;
           this.current = 0;
           this.resetState();
+          this.showServiceSelect = false;
+          this.showWrongNotes = false;
 
           switch (mode) {
             case 'sequential':
@@ -1362,6 +1752,9 @@
               break;
             case 'unsolved':
               this.questions = this.fullQuestions.filter(q => !this.solvedQuestions.includes(q.id));
+              break;
+            case 'bookmark':
+              this.questions = this.fullQuestions.filter(q => this.bookmarks.includes(q.id));
               break;
           }
 
@@ -1381,6 +1774,12 @@
           } else {
             if (this.selectedChoices.length >= correctCount) return;
             this.selectedChoices.push(choice);
+          }
+
+          // 모의고사 모드에서는 자동 제출하지 않음
+          if (this.isExamMode) {
+            this.saveExamAnswer();
+            return;
           }
 
           if (this.selectedChoices.length === correctCount) {
@@ -1495,17 +1894,28 @@
         nextQuestion() {
           if (this.current + 1 < this.questions.length) {
             this.current++;
-            this.resetState();
-            this.resetTimer();
+            this.loadQuestionState();
+            if (!this.isExamMode) this.resetTimer();
           }
         },
 
         prevQuestion() {
           if (this.current > 0) {
             this.current--;
-            this.resetState();
-            this.resetTimer();
+            this.loadQuestionState();
+            if (!this.isExamMode) this.resetTimer();
           }
+        },
+
+        loadQuestionState() {
+          // 모의고사 모드에서는 기존 답안 불러오기
+          if (this.isExamMode && this.question && this.examAnswers[this.question.id]) {
+            this.selectedChoices = [...this.examAnswers[this.question.id]];
+          } else {
+            this.selectedChoices = [];
+          }
+          this.showAnswer = false;
+          this.showExplanation = false;
         },
 
         jumpTo() {
@@ -1520,7 +1930,12 @@
         },
 
         resetState() {
-          this.selectedChoices = [];
+          // 모의고사 모드에서는 기존 답안 불러오기
+          if (this.isExamMode && this.question && this.examAnswers[this.question.id]) {
+            this.selectedChoices = [...this.examAnswers[this.question.id]];
+          } else {
+            this.selectedChoices = [];
+          }
           this.showAnswer = false;
           this.showExplanation = false;
         },
@@ -1574,6 +1989,134 @@
           const saved = localStorage.getItem(`aws-quiz-wrongnote-${this.currentUser}`);
           if (saved) {
             this.wrongNoteData = JSON.parse(saved);
+          }
+        },
+
+        // ========================================
+        // 북마크
+        // ========================================
+        toggleBookmark(questionId) {
+          if (this.bookmarks.includes(questionId)) {
+            this.bookmarks = this.bookmarks.filter(id => id !== questionId);
+          } else {
+            this.bookmarks.push(questionId);
+          }
+          this.saveBookmarks();
+        },
+
+        saveBookmarks() {
+          localStorage.setItem(
+            `aws-quiz-bookmarks-${this.currentUser}`,
+            JSON.stringify(this.bookmarks)
+          );
+        },
+
+        loadBookmarks() {
+          const saved = localStorage.getItem(`aws-quiz-bookmarks-${this.currentUser}`);
+          if (saved) {
+            this.bookmarks = JSON.parse(saved);
+          }
+        },
+
+        // ========================================
+        // 서비스별 풀기
+        // ========================================
+        startServiceMode(serviceName) {
+          this.selectedService = serviceName;
+          this.showServiceSelect = false;
+          this.currentMode = 'service';
+          this.current = 0;
+          this.resetState();
+
+          this.questions = this.fullQuestions.filter(q =>
+            q.services && q.services.includes(serviceName)
+          );
+
+          this.resetTimer();
+        },
+
+        // ========================================
+        // 모의고사 모드
+        // ========================================
+        startExamMode() {
+          if (!confirm('모의고사를 시작하시겠습니까?\n\n• 65문제 / 130분\n• 중간 저장 없음\n• 합격 기준: 72%')) {
+            return;
+          }
+
+          this.isExamMode = true;
+          this.showExamResult = false;
+          this.examTimeRemaining = this.examTimeLimit;
+          this.examAnswers = {};
+          this.examStartTime = Date.now();
+          this.currentMode = 'exam';
+
+          // 랜덤으로 65문제 선택
+          const shuffled = this.shuffleArray([...this.fullQuestions]);
+          this.questions = shuffled.slice(0, 65);
+          this.current = 0;
+          this.resetState();
+
+          // 모의고사 타이머 시작
+          this.examTimerInterval = setInterval(() => {
+            this.examTimeRemaining--;
+            if (this.examTimeRemaining <= 0) {
+              this.endExamMode();
+            }
+          }, 1000);
+
+          this.stopTimer(); // 일반 타이머 중지
+        },
+
+        endExamMode() {
+          if (this.examTimerInterval) {
+            clearInterval(this.examTimerInterval);
+            this.examTimerInterval = null;
+          }
+
+          // 결과 계산
+          let correct = 0;
+          let wrong = 0;
+
+          this.questions.forEach(q => {
+            const userAnswer = this.examAnswers[q.id];
+            if (userAnswer) {
+              const selectedSorted = [...userAnswer].sort().join(',');
+              const correctSorted = [...q.answers].sort().join(',');
+              if (selectedSorted === correctSorted) {
+                correct++;
+              } else {
+                wrong++;
+              }
+            } else {
+              wrong++; // 미응답도 오답 처리
+            }
+          });
+
+          const timeUsedSec = Math.floor((Date.now() - this.examStartTime) / 1000);
+          const timeUsedMin = Math.floor(timeUsedSec / 60);
+          const timeUsedSecRem = timeUsedSec % 60;
+
+          this.examResult = {
+            correct,
+            wrong,
+            rate: Math.round((correct / 65) * 100),
+            timeUsed: `${timeUsedMin}분 ${timeUsedSecRem}초`
+          };
+
+          this.showExamResult = true;
+          this.isExamMode = false;
+        },
+
+        closeExamResult() {
+          this.showExamResult = false;
+          this.setMode('sequential');
+          this.startTimer();
+        },
+
+        // 모의고사용 답안 저장 (submitAnswer 수정 필요)
+        saveExamAnswer() {
+          if (this.isExamMode && this.question) {
+            this.examAnswers[this.question.id] = [...this.selectedChoices];
           }
         }
       }
