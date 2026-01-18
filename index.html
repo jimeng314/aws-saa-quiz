@@ -474,6 +474,219 @@
       color: #991b1b;
     }
 
+    /* 오답노트 버튼 */
+    .wrong-note-btn {
+      margin-top: 1rem;
+      padding: 0.75rem 1.5rem;
+      background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.95rem;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.2s ease;
+    }
+
+    .wrong-note-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
+    }
+
+    /* 오답노트 패널 */
+    .wrong-notes-panel {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .wrong-notes-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .wrong-notes-header h3 {
+      font-size: 1.2rem;
+      color: #1f2937;
+      margin: 0;
+    }
+
+    .wrong-notes-header .count {
+      color: #6b7280;
+      font-weight: normal;
+    }
+
+    .back-btn {
+      background: #f3f4f6;
+      border: none;
+      border-radius: 8px;
+      padding: 0.5rem 0.75rem;
+      font-size: 1.2rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .back-btn:hover {
+      background: #e5e7eb;
+    }
+
+    /* 필터 섹션 */
+    .filter-section {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-bottom: 1rem;
+    }
+
+    .filter-btn {
+      padding: 0.4rem 0.8rem;
+      border: 2px solid #e5e7eb;
+      border-radius: 20px;
+      background: white;
+      cursor: pointer;
+      font-size: 0.8rem;
+      transition: all 0.2s ease;
+      font-family: inherit;
+    }
+
+    .filter-btn:hover {
+      border-color: #667eea;
+      background: #f5f3ff;
+    }
+
+    .filter-btn.active {
+      border-color: #667eea;
+      background: #667eea;
+      color: white;
+    }
+
+    /* 정렬 섹션 */
+    .sort-section {
+      margin-bottom: 1rem;
+    }
+
+    .sort-select {
+      padding: 0.5rem 1rem;
+      border: 2px solid #e5e7eb;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-family: inherit;
+      background: white;
+      cursor: pointer;
+    }
+
+    .sort-select:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+
+    /* 오답 카드 */
+    .wrong-cards {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .wrong-card {
+      background: #fef3c7;
+      border: 1px solid #fcd34d;
+      border-radius: 12px;
+      padding: 1rem;
+      transition: all 0.2s ease;
+    }
+
+    .wrong-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(252, 211, 77, 0.3);
+    }
+
+    .wrong-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 0.75rem;
+    }
+
+    .question-id {
+      font-weight: 700;
+      color: #92400e;
+      font-size: 0.9rem;
+    }
+
+    .wrong-card .services {
+      display: flex;
+      gap: 0.3rem;
+      flex-wrap: wrap;
+    }
+
+    .wrong-card .service-tag {
+      background: #fde68a;
+      color: #92400e;
+      padding: 0.2rem 0.5rem;
+      border-radius: 10px;
+      font-size: 0.7rem;
+      font-weight: 500;
+    }
+
+    .question-preview {
+      color: #78350f;
+      font-size: 0.9rem;
+      line-height: 1.5;
+      margin-bottom: 0.75rem;
+    }
+
+    .wrong-card-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .wrong-info {
+      font-size: 0.8rem;
+      color: #92400e;
+    }
+
+    .wrong-count {
+      font-weight: 700;
+      color: #dc2626;
+    }
+
+    .solve-btn {
+      background: #f59e0b;
+      color: white;
+      border: none;
+      padding: 0.4rem 1rem;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-family: inherit;
+    }
+
+    .solve-btn:hover {
+      background: #d97706;
+    }
+
+    /* 빈 상태 */
+    .empty-state {
+      text-align: center;
+      padding: 3rem;
+      color: #6b7280;
+    }
+
+    .empty-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+    }
+
     @media (max-width: 640px) {
       .header h1 {
         font-size: 1.3rem;
@@ -510,6 +723,27 @@
 
       .mode-btn {
         justify-content: center;
+      }
+
+      .wrong-note-btn {
+        width: 100%;
+        justify-content: center;
+      }
+
+      .wrong-card-header {
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+
+      .wrong-card-footer {
+        flex-direction: column;
+        gap: 0.5rem;
+        align-items: stretch;
+      }
+
+      .solve-btn {
+        width: 100%;
+        text-align: center;
       }
     }
   </style>
@@ -608,10 +842,75 @@
               <span class="count">{{ unsolvedQuestions.length }}</span>
             </button>
           </div>
+
+          <!-- 오답노트 버튼 -->
+          <button class="wrong-note-btn" @click="showWrongNotes = true" v-if="wrongQuestions.length > 0">
+            <span>📋</span> 오답노트 ({{ wrongQuestions.length }}문제)
+          </button>
+        </div>
+
+        <!-- 오답노트 화면 -->
+        <div class="wrong-notes-panel" v-if="showWrongNotes">
+          <div class="wrong-notes-header">
+            <button class="back-btn" @click="showWrongNotes = false">←</button>
+            <h3>📋 오답노트 <span class="count">({{ filteredWrongNotes.length }}문제)</span></h3>
+          </div>
+
+          <!-- 서비스 필터 -->
+          <div class="filter-section">
+            <button
+              class="filter-btn"
+              :class="{ active: wrongNoteFilter === 'all' }"
+              @click="wrongNoteFilter = 'all'"
+            >전체</button>
+            <button
+              v-for="service in wrongNoteServices"
+              :key="service"
+              class="filter-btn"
+              :class="{ active: wrongNoteFilter === service }"
+              @click="wrongNoteFilter = service"
+            >{{ service }} ({{ getWrongCountByService(service) }})</button>
+          </div>
+
+          <!-- 정렬 -->
+          <div class="sort-section">
+            <select class="sort-select" v-model="wrongNoteSort">
+              <option value="count">오답 많은 순</option>
+              <option value="recent">최근 오답 순</option>
+              <option value="id">문제 번호 순</option>
+            </select>
+          </div>
+
+          <!-- 오답 목록 -->
+          <div class="wrong-cards">
+            <div class="wrong-card" v-for="item in filteredWrongNotes" :key="item.id">
+              <div class="wrong-card-header">
+                <span class="question-id">#{{ item.id }}</span>
+                <div class="services">
+                  <span class="service-tag" v-for="s in item.services" :key="s">{{ s }}</span>
+                </div>
+              </div>
+              <p class="question-preview">{{ item.question.substring(0, 100) }}{{ item.question.length > 100 ? '...' : '' }}</p>
+              <div class="wrong-card-footer">
+                <span class="wrong-info">
+                  오답 <span class="wrong-count">{{ wrongNoteData[item.id]?.count || 1 }}회</span>
+                  <span v-if="wrongNoteData[item.id]?.lastDate"> | 최근: {{ wrongNoteData[item.id].lastDate }}</span>
+                </span>
+                <button class="solve-btn" @click="solveFromWrongNote(item.id)">풀기</button>
+              </div>
+            </div>
+
+            <!-- 빈 상태 -->
+            <div class="empty-state" v-if="filteredWrongNotes.length === 0">
+              <div class="empty-icon">🎉</div>
+              <p v-if="wrongNoteFilter === 'all'">아직 틀린 문제가 없습니다!</p>
+              <p v-else>{{ wrongNoteFilter }} 관련 오답이 없습니다.</p>
+            </div>
+          </div>
         </div>
 
         <!-- 통계 -->
-        <div class="stats">
+        <div class="stats" v-if="!showWrongNotes">
           <div class="stat-card">
             <h3>전체 문제</h3>
             <p>{{ fullQuestions.length }}</p>
@@ -631,7 +930,7 @@
         </div>
 
         <!-- 퀴즈 -->
-        <div class="quiz-container" v-if="questions.length > 0">
+        <div class="quiz-container" v-if="questions.length > 0 && !showWrongNotes">
           <progress :value="current + 1" :max="questions.length"></progress>
           <div class="progress-info">
             <span>진행률: {{ current + 1 }} / {{ questions.length }}</span>
@@ -766,7 +1065,13 @@
 
           // 기타
           jumpNumber: null,
-          attemptCounts: {} // 문제별 시도 횟수
+          attemptCounts: {}, // 문제별 시도 횟수
+
+          // 오답노트
+          showWrongNotes: false,
+          wrongNoteData: {}, // { questionId: { count: 오답횟수, lastDate: 최근오답일 } }
+          wrongNoteFilter: 'all', // 'all' 또는 서비스명
+          wrongNoteSort: 'count' // 'count', 'recent', 'id'
         };
       },
 
@@ -807,6 +1112,52 @@
             'offline': '오프라인'
           };
           return texts[this.syncStatus] || '오프라인';
+        },
+
+        // 오답노트: 필터링된 오답 목록
+        filteredWrongNotes() {
+          let wrongItems = this.fullQuestions.filter(q => this.wrongQuestions.includes(q.id));
+
+          // 서비스 필터
+          if (this.wrongNoteFilter !== 'all') {
+            wrongItems = wrongItems.filter(q =>
+              q.services && q.services.includes(this.wrongNoteFilter)
+            );
+          }
+
+          // 정렬
+          switch (this.wrongNoteSort) {
+            case 'count':
+              wrongItems.sort((a, b) =>
+                (this.wrongNoteData[b.id]?.count || 1) - (this.wrongNoteData[a.id]?.count || 1)
+              );
+              break;
+            case 'recent':
+              wrongItems.sort((a, b) => {
+                const dateA = this.wrongNoteData[a.id]?.lastDate || '0000-00-00';
+                const dateB = this.wrongNoteData[b.id]?.lastDate || '0000-00-00';
+                return dateB.localeCompare(dateA);
+              });
+              break;
+            case 'id':
+              wrongItems.sort((a, b) => a.id - b.id);
+              break;
+          }
+
+          return wrongItems;
+        },
+
+        // 오답노트: 서비스 목록
+        wrongNoteServices() {
+          const services = new Set();
+          this.fullQuestions
+            .filter(q => this.wrongQuestions.includes(q.id))
+            .forEach(q => {
+              if (q.services) {
+                q.services.forEach(s => services.add(s));
+              }
+            });
+          return Array.from(services).sort();
         }
       },
 
@@ -902,6 +1253,9 @@
         },
 
         async loadUserStats() {
+          // 오답노트 데이터 로드
+          this.loadWrongNoteData();
+
           if (API_URL === 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE') {
             // 로컬 스토리지에서 로드
             const saved = localStorage.getItem(`aws-quiz-stats-${this.currentUser}`);
@@ -1057,6 +1411,9 @@
             this.wrongQuestions = this.wrongQuestions.filter(id => id !== this.question.id);
           }
 
+          // 오답노트 데이터 업데이트
+          this.updateWrongNoteData(this.question.id, isCorrect);
+
           // 결과 저장
           await this.saveQuizResult(isCorrect);
         },
@@ -1165,6 +1522,58 @@
           this.selectedChoices = [];
           this.showAnswer = false;
           this.showExplanation = false;
+        },
+
+        // ========================================
+        // 오답노트
+        // ========================================
+        getWrongCountByService(service) {
+          return this.fullQuestions.filter(q =>
+            this.wrongQuestions.includes(q.id) &&
+            q.services && q.services.includes(service)
+          ).length;
+        },
+
+        solveFromWrongNote(questionId) {
+          // 오답노트 닫기
+          this.showWrongNotes = false;
+
+          // 해당 문제 찾기
+          const questionIndex = this.fullQuestions.findIndex(q => q.id === questionId);
+          if (questionIndex === -1) return;
+
+          // 순차 모드로 전환하고 해당 문제로 이동
+          this.currentMode = 'sequential';
+          this.questions = [...this.fullQuestions];
+          this.current = questionIndex;
+          this.resetState();
+          this.resetTimer();
+        },
+
+        updateWrongNoteData(questionId, isCorrect) {
+          const today = new Date().toISOString().slice(0, 10);
+
+          if (!isCorrect) {
+            // 오답인 경우 카운트 증가
+            if (!this.wrongNoteData[questionId]) {
+              this.wrongNoteData[questionId] = { count: 0, lastDate: today };
+            }
+            this.wrongNoteData[questionId].count++;
+            this.wrongNoteData[questionId].lastDate = today;
+          }
+
+          // 로컬 스토리지에 저장
+          localStorage.setItem(
+            `aws-quiz-wrongnote-${this.currentUser}`,
+            JSON.stringify(this.wrongNoteData)
+          );
+        },
+
+        loadWrongNoteData() {
+          const saved = localStorage.getItem(`aws-quiz-wrongnote-${this.currentUser}`);
+          if (saved) {
+            this.wrongNoteData = JSON.parse(saved);
+          }
         }
       }
     }).mount('#app');
