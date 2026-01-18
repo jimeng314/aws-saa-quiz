@@ -17,10 +17,13 @@
 const SPREADSHEET_ID = '146VfL2XxlXdJsUMad4WixRbXVhoINJCCC3XoBdCGwtg';
 const SLACK_WEBHOOK_URL = 'YOUR_SLACK_WEBHOOK_URL_HERE';
 
+const SHEET_DASHBOARD = '대시보드';
 const SHEET_USERS = '사용자목록';
 const SHEET_SUMMARY = '전체요약';
 const SHEET_SERVICE_SUMMARY = '서비스별요약';
 const SHEET_SETTINGS = '알림설정';
+
+const QUIZ_URL = 'https://jimeng314.github.io/aws-saa-quiz/';
 
 // ============================================
 // 웹 앱 엔드포인트
@@ -727,5 +730,149 @@ function initializeSheets() {
     serviceSheet.setFrozenRows(1);
   }
 
+  // 대시보드 시트 생성
+  createDashboard(ss);
+
   console.log('시트 초기화 완료');
+}
+
+// ============================================
+// 대시보드
+// ============================================
+
+function createDashboard(ss) {
+  if (!ss) {
+    ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+  }
+
+  let sheet = ss.getSheetByName(SHEET_DASHBOARD);
+  if (sheet) {
+    sheet.clear();
+  } else {
+    sheet = ss.insertSheet(SHEET_DASHBOARD, 0); // 맨 앞에 추가
+  }
+
+  // 열 너비 설정
+  sheet.setColumnWidth(1, 30);   // A: 여백
+  sheet.setColumnWidth(2, 180);  // B
+  sheet.setColumnWidth(3, 180);  // C
+  sheet.setColumnWidth(4, 180);  // D
+  sheet.setColumnWidth(5, 180);  // E
+  sheet.setColumnWidth(6, 30);   // F: 여백
+
+  // 행 높이 설정
+  for (let i = 1; i <= 50; i++) {
+    sheet.setRowHeight(i, 25);
+  }
+
+  // ========== 헤더 ==========
+  sheet.getRange('B2:E2').merge();
+  sheet.getRange('B2').setValue('🎓 AWS SAA-C03 스터디 대시보드');
+  sheet.getRange('B2').setFontSize(18).setFontWeight('bold').setHorizontalAlignment('center');
+  sheet.getRange('B2:E2').setBackground('#667eea').setFontColor('white');
+  sheet.setRowHeight(2, 45);
+
+  // ========== 전체 현황 ==========
+  sheet.getRange('B4').setValue('📊 전체 현황');
+  sheet.getRange('B4').setFontSize(12).setFontWeight('bold');
+
+  // 사용자 수 계산
+  const usersResult = getUsers();
+  const userCount = usersResult.success ? usersResult.users.length : 0;
+
+  const statsData = [
+    ['참여 인원', userCount + '명'],
+    ['총 문제 수', '724문제'],
+    ['합격 기준', '72% (720/1000)']
+  ];
+
+  sheet.getRange('B5:C7').setValues(statsData);
+  sheet.getRange('B5:B7').setBackground('#f3f4f6').setFontWeight('bold');
+  sheet.getRange('C5:C7').setHorizontalAlignment('right');
+  sheet.getRange('B5:C7').setBorder(true, true, true, true, true, true, '#e5e7eb', SpreadsheetApp.BorderStyle.SOLID);
+
+  // ========== 바로가기 ==========
+  sheet.getRange('D4').setValue('🔗 바로가기');
+  sheet.getRange('D4').setFontSize(12).setFontWeight('bold');
+
+  sheet.getRange('D5:E5').merge();
+  sheet.getRange('D5').setValue('👉 퀴즈 앱 바로가기');
+  sheet.getRange('D5').setFontWeight('bold');
+
+  sheet.getRange('D6:E6').merge();
+  sheet.getRange('D6').setValue(QUIZ_URL);
+  sheet.getRange('D6').setFontColor('#667eea');
+
+  sheet.getRange('D5:E6').setBackground('#f0fdf4').setBorder(true, true, true, true, true, true, '#86efac', SpreadsheetApp.BorderStyle.SOLID);
+
+  // ========== 주요 기능 ==========
+  sheet.getRange('B9').setValue('📚 주요 기능');
+  sheet.getRange('B9').setFontSize(12).setFontWeight('bold');
+
+  const features = [
+    ['🎯 풀이 모드', '순차 / 랜덤 / 오답복습 / 미풀이 / 북마크'],
+    ['🏷️ 서비스별 풀기', 'EC2, S3, Lambda 등 원하는 서비스만 집중 학습'],
+    ['📝 모의고사', '65문제 / 130분 실전 시뮬레이션 (합격기준 72%)'],
+    ['📋 오답노트', '틀린 문제 자동 수집, 서비스별 필터, 오답횟수 추적'],
+    ['⭐ 북마크', '중요 문제 저장, 나중에 복습'],
+    ['📈 학습 기록', '풀이 내역 자동 저장, 개인별 통계']
+  ];
+
+  sheet.getRange('B10:C15').setValues(features);
+  sheet.getRange('B10:B15').setBackground('#dbeafe').setFontWeight('bold');
+  sheet.getRange('B10:C15').setBorder(true, true, true, true, true, true, '#93c5fd', SpreadsheetApp.BorderStyle.SOLID);
+
+  // ========== 시트 안내 ==========
+  sheet.getRange('B17').setValue('📑 시트 안내');
+  sheet.getRange('B17').setFontSize(12).setFontWeight('bold');
+
+  const sheets = [
+    ['사용자목록', '스터디 참여자 관리 (이름, 슬랙ID, 목표 등)'],
+    ['전체요약', '사용자별 누적 통계 (자동 업데이트)'],
+    ['서비스별요약', 'AWS 서비스별 정답률 분석'],
+    ['{이름}', '개인별 상세 풀이 기록']
+  ];
+
+  sheet.getRange('B18:C21').setValues(sheets);
+  sheet.getRange('B18:B21').setBackground('#fef3c7').setFontWeight('bold');
+  sheet.getRange('B18:C21').setBorder(true, true, true, true, true, true, '#fcd34d', SpreadsheetApp.BorderStyle.SOLID);
+
+  // ========== 슬랙 알림 ==========
+  sheet.getRange('D9').setValue('📅 슬랙 알림 (자동)');
+  sheet.getRange('D9').setFontSize(12).setFontWeight('bold');
+
+  const slackInfo = [
+    ['주간 리포트', '매주 월요일 오전 10시'],
+    ['격려 알림', '매일 오전 9시 (3일 이상 미접속자)']
+  ];
+
+  sheet.getRange('D10:E11').setValues(slackInfo);
+  sheet.getRange('D10:D11').setBackground('#fce7f3').setFontWeight('bold');
+  sheet.getRange('D10:E11').setBorder(true, true, true, true, true, true, '#f9a8d4', SpreadsheetApp.BorderStyle.SOLID);
+
+  // ========== 기록 컬럼 안내 ==========
+  sheet.getRange('D13').setValue('📝 기록 컬럼 (17개)');
+  sheet.getRange('D13').setFontSize(12).setFontWeight('bold');
+
+  const columns = [
+    ['타임스탬프, 세션ID, 풀이모드, 문제ID'],
+    ['문제내용, 선지, 선택한 답, 정답, 해설'],
+    ['정답여부, 문제유형, AWS서비스'],
+    ['소요시간, 시도횟수, 요일, 시간대, 누적정답률']
+  ];
+
+  sheet.getRange('D14:D17').setValues(columns);
+  sheet.getRange('D14:E17').setBackground('#f3f4f6');
+  sheet.getRange('D14:E17').setBorder(true, true, true, true, true, true, '#d1d5db', SpreadsheetApp.BorderStyle.SOLID);
+
+  // ========== 마지막 업데이트 ==========
+  const now = new Date();
+  const updateDate = Utilities.formatDate(now, 'Asia/Seoul', 'yyyy-MM-dd HH:mm');
+  sheet.getRange('B23').setValue('⏰ 마지막 업데이트: ' + updateDate);
+  sheet.getRange('B23').setFontColor('#6b7280').setFontSize(10);
+
+  // 전체 시트 세로 정렬
+  sheet.getRange('A1:F50').setVerticalAlignment('middle');
+
+  console.log('대시보드 생성 완료');
 }
