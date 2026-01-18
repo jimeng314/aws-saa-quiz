@@ -172,17 +172,23 @@ function getUserStats(userName) {
     }
   }
 
-  // 사용자 설정 시트에서 북마크/오답노트 데이터 로드
-  const userDataSheet = ss.getSheetByName(userName + '_설정');
+  // 사용자목록 시트에서 북마크/오답노트 데이터 로드
+  const usersSheet = ss.getSheetByName(SHEET_USERS);
   let bookmarks = [];
   let wrongNoteData = {};
 
-  if (userDataSheet) {
+  if (usersSheet) {
     try {
-      const bookmarkCell = userDataSheet.getRange('A2').getValue();
-      const wrongNoteCell = userDataSheet.getRange('B2').getValue();
-      if (bookmarkCell) bookmarks = JSON.parse(bookmarkCell);
-      if (wrongNoteCell) wrongNoteData = JSON.parse(wrongNoteCell);
+      const usersData = usersSheet.getDataRange().getValues();
+      for (let i = 1; i < usersData.length; i++) {
+        if (usersData[i][0] === userName) {
+          const bookmarkCell = usersData[i][5]; // F열
+          const wrongNoteCell = usersData[i][6]; // G열
+          if (bookmarkCell) bookmarks = JSON.parse(bookmarkCell);
+          if (wrongNoteCell) wrongNoteData = JSON.parse(wrongNoteCell);
+          break;
+        }
+      }
     } catch (e) {
       console.log('사용자 설정 파싱 오류:', e);
     }
@@ -203,7 +209,7 @@ function getUserStats(userName) {
 }
 
 // ============================================
-// 사용자 데이터 저장 (북마크, 오답노트)
+// 사용자 데이터 저장 (북마크, 오답노트) - 사용자목록 시트에 통합
 // ============================================
 
 function saveUserData(data) {
@@ -214,26 +220,30 @@ function saveUserData(data) {
   }
 
   const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
-  const sheetName = userName + '_설정';
-  let sheet = ss.getSheetByName(sheetName);
+  const sheet = ss.getSheetByName(SHEET_USERS);
 
-  // 설정 시트가 없으면 생성
   if (!sheet) {
-    sheet = ss.insertSheet(sheetName);
-    sheet.appendRow(['북마크', '오답노트', '마지막 동기화']);
-    sheet.getRange(1, 1, 1, 3).setFontWeight('bold');
+    return { success: false, error: '사용자목록 시트가 없습니다.' };
   }
 
-  // 데이터 저장
-  const now = new Date();
-  const timestamp = Utilities.formatDate(now, 'Asia/Seoul', 'yyyy-MM-dd HH:mm:ss');
+  // 사용자 행 찾기
+  const data_range = sheet.getDataRange().getValues();
+  let userRow = -1;
 
-  const row2 = sheet.getRange(2, 1, 1, 3);
-  row2.setValues([[
-    JSON.stringify(bookmarks || []),
-    JSON.stringify(wrongNoteData || {}),
-    timestamp
-  ]]);
+  for (let i = 1; i < data_range.length; i++) {
+    if (data_range[i][0] === userName) {
+      userRow = i + 1; // 1-indexed
+      break;
+    }
+  }
+
+  if (userRow === -1) {
+    return { success: false, error: '사용자를 찾을 수 없습니다.' };
+  }
+
+  // F열(북마크), G열(오답노트) 업데이트
+  sheet.getRange(userRow, 6).setValue(JSON.stringify(bookmarks || []));
+  sheet.getRange(userRow, 7).setValue(JSON.stringify(wrongNoteData || {}));
 
   return { success: true, message: '저장 완료' };
 }
@@ -757,8 +767,8 @@ function initializeSheets() {
   let usersSheet = ss.getSheetByName(SHEET_USERS);
   if (!usersSheet) {
     usersSheet = ss.insertSheet(SHEET_USERS);
-    usersSheet.appendRow(['이름', '슬랙ID', '등록일', '알림설정', '목표(문제/일)']);
-    usersSheet.getRange(1, 1, 1, 5).setFontWeight('bold');
+    usersSheet.appendRow(['이름', '슬랙ID', '등록일', '알림설정', '목표(문제/일)', '북마크', '오답노트']);
+    usersSheet.getRange(1, 1, 1, 7).setFontWeight('bold');
     usersSheet.setFrozenRows(1);
   }
 
