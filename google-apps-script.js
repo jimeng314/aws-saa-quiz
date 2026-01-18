@@ -72,6 +72,9 @@ function doPost(e) {
       case 'saveQuizResult':
         result = saveQuizResult(data);
         break;
+      case 'saveUserData':
+        result = saveUserData(data);
+        break;
       default:
         result = { success: false, error: 'Unknown action' };
     }
@@ -122,69 +125,117 @@ function getUserStats(userName) {
   const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
   const sheet = ss.getSheetByName(userName);
 
+  const emptyStats = {
+    success: true,
+    stats: {
+      totalAttempts: 0,
+      correctCount: 0,
+      wrongCount: 0,
+      solvedQuestions: [],
+      wrongQuestions: [],
+      bookmarks: [],
+      wrongNoteData: {}
+    }
+  };
+
   if (!sheet) {
-    return {
-      success: true,
-      stats: {
-        totalAttempts: 0,
-        correctCount: 0,
-        wrongCount: 0,
-        solvedQuestions: [],
-        wrongQuestions: []
-      }
-    };
+    return emptyStats;
   }
 
-  const data = sheet.getDataRange().getValues();
-  if (data.length <= 1) {
-    return {
-      success: true,
-      stats: {
-        totalAttempts: 0,
-        correctCount: 0,
-        wrongCount: 0,
-        solvedQuestions: [],
-        wrongQuestions: []
-      }
-    };
+  const lastRow = sheet.getLastRow();
+  if (lastRow <= 1) {
+    return emptyStats;
   }
+
+  // 필요한 컬럼만 읽기 (D: 문제ID, J: 정답여부) - 성능 최적화
+  const questionIds = sheet.getRange(2, 4, lastRow - 1, 1).getValues();  // D열
+  const results = sheet.getRange(2, 10, lastRow - 1, 1).getValues();     // J열
 
   let correctCount = 0;
   let wrongCount = 0;
   const solvedSet = new Set();
-  const wrongSet = new Set();
   const questionResults = {};
 
-  for (let i = 1; i < data.length; i++) {
-    const questionId = data[i][3];
-    const isCorrect = data[i][9] === '✅';
+  for (let i = 0; i < questionIds.length; i++) {
+    const qId = questionIds[i][0];
+    const isCorrect = results[i][0] === '✅';
 
-    if (isCorrect) {
-      correctCount++;
-    } else {
-      wrongCount++;
-    }
-
-    solvedSet.add(questionId);
-    questionResults[questionId] = isCorrect;
+    isCorrect ? correctCount++ : wrongCount++;
+    solvedSet.add(qId);
+    questionResults[qId] = isCorrect;
   }
 
+  const wrongSet = new Set();
   for (const [qId, isCorrect] of Object.entries(questionResults)) {
     if (!isCorrect) {
       wrongSet.add(parseInt(qId));
     }
   }
 
+  // 사용자 설정 시트에서 북마크/오답노트 데이터 로드
+  const userDataSheet = ss.getSheetByName(userName + '_설정');
+  let bookmarks = [];
+  let wrongNoteData = {};
+
+  if (userDataSheet) {
+    try {
+      const bookmarkCell = userDataSheet.getRange('A2').getValue();
+      const wrongNoteCell = userDataSheet.getRange('B2').getValue();
+      if (bookmarkCell) bookmarks = JSON.parse(bookmarkCell);
+      if (wrongNoteCell) wrongNoteData = JSON.parse(wrongNoteCell);
+    } catch (e) {
+      console.log('사용자 설정 파싱 오류:', e);
+    }
+  }
+
   return {
     success: true,
     stats: {
-      totalAttempts: data.length - 1,
-      correctCount: correctCount,
-      wrongCount: wrongCount,
+      totalAttempts: lastRow - 1,
+      correctCount,
+      wrongCount,
       solvedQuestions: Array.from(solvedSet),
-      wrongQuestions: Array.from(wrongSet)
+      wrongQuestions: Array.from(wrongSet),
+      bookmarks,
+      wrongNoteData
     }
   };
+}
+
+// ============================================
+// 사용자 데이터 저장 (북마크, 오답노트)
+// ============================================
+
+function saveUserData(data) {
+  const { userName, bookmarks, wrongNoteData } = data;
+
+  if (!userName) {
+    return { success: false, error: '사용자 이름이 필요합니다.' };
+  }
+
+  const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+  const sheetName = userName + '_설정';
+  let sheet = ss.getSheetByName(sheetName);
+
+  // 설정 시트가 없으면 생성
+  if (!sheet) {
+    sheet = ss.insertSheet(sheetName);
+    sheet.appendRow(['북마크', '오답노트', '마지막 동기화']);
+    sheet.getRange(1, 1, 1, 3).setFontWeight('bold');
+  }
+
+  // 데이터 저장
+  const now = new Date();
+  const timestamp = Utilities.formatDate(now, 'Asia/Seoul', 'yyyy-MM-dd HH:mm:ss');
+
+  const row2 = sheet.getRange(2, 1, 1, 3);
+  row2.setValues([[
+    JSON.stringify(bookmarks || []),
+    JSON.stringify(wrongNoteData || {}),
+    timestamp
+  ]]);
+
+  return { success: true, message: '저장 완료' };
 }
 
 // ============================================
