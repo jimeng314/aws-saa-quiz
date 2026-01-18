@@ -596,9 +596,13 @@ function sendWeeklyReport() {
     let weeklyAttempts = 0;
     let weeklyCorrect = 0;
     const servicesWrong = {};
+    const totalSolved = new Set();
 
     for (let i = 1; i < data.length; i++) {
       const timestamp = new Date(data[i][0]);
+      const questionId = data[i][3];
+      totalSolved.add(questionId);
+
       if (timestamp >= oneWeekAgo) {
         weeklyAttempts++;
         if (data[i][9] === '✅') {
@@ -621,18 +625,24 @@ function sendWeeklyReport() {
       }
     }
 
+    const totalSolvedCount = totalSolved.size;
+    const remaining = 724 - totalSolvedCount;
+    const progressRate = Math.round((totalSolvedCount / 724) * 100);
+
     if (weeklyAttempts > 0) {
       weeklyStats.push({
         name: user.name,
         slackId: user.slackId,
-        attempts: weeklyAttempts,
-        rate: Math.round((weeklyCorrect / weeklyAttempts) * 100),
+        weeklyAttempts: weeklyAttempts,
+        totalSolved: totalSolvedCount,
+        remaining: remaining,
+        progressRate: progressRate,
         weakestService: weakestService
       });
     }
   }
 
-  weeklyStats.sort((a, b) => b.attempts - a.attempts);
+  weeklyStats.sort((a, b) => b.weeklyAttempts - a.weeklyAttempts);
 
   const today = new Date();
   const weekAgo = new Date(today);
@@ -643,12 +653,12 @@ function sendWeeklyReport() {
   let message = `📊 *AWS SAA 스터디 주간 리포트* (${dateFormat(weekAgo)} ~ ${dateFormat(today)})\n\n`;
 
   if (weeklyStats.length > 0) {
-    message += `🏆 *이번주 MVP*: ${weeklyStats[0].name} (${weeklyStats[0].attempts}문제, 정답률 ${weeklyStats[0].rate}%)\n\n`;
-    message += `| 이름 | 푼 문제 | 정답률 | 취약 서비스 |\n`;
-    message += `|------|--------|-------|------------|\n`;
+    message += `🏆 *이번주 MVP*: ${weeklyStats[0].name} (${weeklyStats[0].weeklyAttempts}문제)\n\n`;
+    message += `| 이름 | 이번주 | 누적 | 남은문제 | 진행률 | 취약서비스 |\n`;
+    message += `|------|-------|------|---------|-------|----------|\n`;
 
     for (const stat of weeklyStats) {
-      message += `| ${stat.name} | ${stat.attempts} | ${stat.rate}% | ${stat.weakestService} |\n`;
+      message += `| ${stat.name} | ${stat.weeklyAttempts} | ${stat.totalSolved} | ${stat.remaining} | ${stat.progressRate}% | ${stat.weakestService} |\n`;
     }
 
     const allWeak = weeklyStats.map(s => s.weakestService).filter(s => s !== '-');
@@ -661,7 +671,7 @@ function sendWeeklyReport() {
       .map(([service, _]) => service);
 
     if (commonWeak.length > 0) {
-      message += `\n💡 *공통 취약 서비스*: ${commonWeak.join(', ')} → 함께 복습 추천!`;
+      message += `\n💡 *공통 취약 서비스*: ${commonWeak.join(', ')}`;
     }
   } else {
     message += `이번주 학습 기록이 없습니다. 다들 화이팅! 💪`;
