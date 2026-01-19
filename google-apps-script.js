@@ -862,85 +862,135 @@ function createDashboard(ss) {
   sheet.getRange('C5:C7').setHorizontalAlignment('right');
   sheet.getRange('B5:C7').setBorder(true, true, true, true, true, true, '#e5e7eb', SpreadsheetApp.BorderStyle.SOLID);
 
-  // ========== 바로가기 ==========
-  sheet.getRange('D4').setValue('🔗 바로가기');
+  // ========== SAA-C03 시험 정보 ==========
+  sheet.getRange('D4').setValue('📋 SAA-C03 시험 정보');
   sheet.getRange('D4').setFontSize(12).setFontWeight('bold');
 
-  sheet.getRange('D5:E5').merge();
-  sheet.getRange('D5').setValue('👉 퀴즈 앱 바로가기');
-  sheet.getRange('D5').setFontWeight('bold');
+  const examInfo = [
+    ['시험 시간', '130분'],
+    ['문제 수', '65문제'],
+    ['합격 점수', '720 / 1000점 (72%)'],
+    ['시험 비용', '$150 USD'],
+    ['유효 기간', '3년'],
+    ['언어', '한국어 / 영어 (+30분)']
+  ];
 
-  sheet.getRange('D6:E6').merge();
-  sheet.getRange('D6').setValue(QUIZ_URL);
-  sheet.getRange('D6').setFontColor('#667eea');
+  sheet.getRange('D5:E10').setValues(examInfo);
+  sheet.getRange('D5:D10').setBackground('#fef3c7').setFontWeight('bold');
+  sheet.getRange('E5:E10').setHorizontalAlignment('right');
+  sheet.getRange('D5:E10').setBorder(true, true, true, true, true, true, '#fcd34d', SpreadsheetApp.BorderStyle.SOLID);
 
-  sheet.getRange('D5:E6').setBackground('#f0fdf4').setBorder(true, true, true, true, true, true, '#86efac', SpreadsheetApp.BorderStyle.SOLID);
+  // ========== 바로가기 ==========
+  sheet.getRange('B9').setValue('🔗 바로가기');
+  sheet.getRange('B9').setFontSize(12).setFontWeight('bold');
+
+  sheet.getRange('B10:C10').merge();
+  sheet.getRange('B10').setValue('👉 퀴즈 앱 바로가기');
+  sheet.getRange('B10').setFontWeight('bold');
+
+  sheet.getRange('B11:C11').merge();
+  sheet.getRange('B11').setValue(QUIZ_URL);
+  sheet.getRange('B11').setFontColor('#667eea');
+
+  sheet.getRange('B10:C11').setBackground('#f0fdf4').setBorder(true, true, true, true, true, true, '#86efac', SpreadsheetApp.BorderStyle.SOLID);
+
+  // ========== 출제 도메인 ==========
+  sheet.getRange('D12').setValue('📊 출제 도메인 (SAA-C03)');
+  sheet.getRange('D12').setFontSize(12).setFontWeight('bold');
+
+  const domains = [
+    ['도메인 1: 보안 아키텍처 설계', '30%'],
+    ['도메인 2: 복원력 있는 아키텍처 설계', '26%'],
+    ['도메인 3: 고성능 아키텍처 설계', '24%'],
+    ['도메인 4: 비용 최적화 아키텍처 설계', '20%']
+  ];
+
+  sheet.getRange('D13:E16').setValues(domains);
+  sheet.getRange('D13:D16').setBackground('#ede9fe').setFontWeight('bold');
+  sheet.getRange('E13:E16').setHorizontalAlignment('right').setBackground('#ede9fe');
+  sheet.getRange('D13:E16').setBorder(true, true, true, true, true, true, '#c4b5fd', SpreadsheetApp.BorderStyle.SOLID);
 
   // ========== 주요 기능 ==========
-  sheet.getRange('B9').setValue('📚 주요 기능');
-  sheet.getRange('B9').setFontSize(12).setFontWeight('bold');
+  sheet.getRange('B13').setValue('📚 주요 기능');
+  sheet.getRange('B13').setFontSize(12).setFontWeight('bold');
 
   const features = [
     ['🎯 풀이 모드', '순차 / 랜덤 / 오답복습 / 미풀이 / 북마크'],
-    ['🏷️ 서비스별 풀기', 'EC2, S3, Lambda 등 원하는 서비스만 집중 학습'],
-    ['📝 모의고사', '65문제 / 130분 실전 시뮬레이션 (합격기준 72%)'],
-    ['📋 오답노트', '틀린 문제 자동 수집, 서비스별 필터, 오답횟수 추적'],
+    ['🏷️ 서비스별 풀기', 'EC2, S3, Lambda 등 원하는 서비스만'],
+    ['📝 모의고사', '65문제 / 130분 실전 시뮬레이션'],
+    ['📋 오답노트', '틀린 문제 자동 수집, 오답횟수 추적'],
     ['⭐ 북마크', '중요 문제 저장, 나중에 복습'],
     ['📈 학습 기록', '풀이 내역 자동 저장, 개인별 통계']
   ];
 
-  sheet.getRange('B10:C15').setValues(features);
-  sheet.getRange('B10:B15').setBackground('#dbeafe').setFontWeight('bold');
-  sheet.getRange('B10:C15').setBorder(true, true, true, true, true, true, '#93c5fd', SpreadsheetApp.BorderStyle.SOLID);
+  sheet.getRange('B14:C19').setValues(features);
+  sheet.getRange('B14:B19').setBackground('#dbeafe').setFontWeight('bold');
+  sheet.getRange('B14:C19').setBorder(true, true, true, true, true, true, '#93c5fd', SpreadsheetApp.BorderStyle.SOLID);
+
+  // ========== 시험 준비 팁 ==========
+  sheet.getRange('D18').setValue('💡 시험 준비 팁');
+  sheet.getRange('D18').setFontSize(12).setFontWeight('bold');
+
+  const tips = [
+    ['• 문제당 평균 2분 배분 (65문제 × 2분)'],
+    ['• 모르는 문제는 플래그 후 나중에 재검토'],
+    ['• 시나리오 기반 문제 - 요구사항 정확히 파악'],
+    ['• Well-Architected 5대 원칙 숙지'],
+    ['• 각 서비스의 사용 사례 및 제한사항 파악']
+  ];
+
+  sheet.getRange('D19:D23').setValues(tips);
+  sheet.getRange('D19:E23').setBackground('#ecfdf5');
+  sheet.getRange('D19:E23').setBorder(true, true, true, true, true, true, '#6ee7b7', SpreadsheetApp.BorderStyle.SOLID);
 
   // ========== 시트 안내 ==========
-  sheet.getRange('B17').setValue('📑 시트 안내');
-  sheet.getRange('B17').setFontSize(12).setFontWeight('bold');
+  sheet.getRange('B21').setValue('📑 시트 안내');
+  sheet.getRange('B21').setFontSize(12).setFontWeight('bold');
 
   const sheets = [
-    ['사용자목록', '스터디 참여자 관리 (이름, 슬랙ID, 목표 등)'],
+    ['사용자목록', '스터디 참여자 관리 (이름, 슬랙ID, 목표)'],
     ['전체요약', '사용자별 누적 통계 (자동 업데이트)'],
     ['서비스별요약', 'AWS 서비스별 정답률 분석'],
     ['{이름}', '개인별 상세 풀이 기록']
   ];
 
-  sheet.getRange('B18:C21').setValues(sheets);
-  sheet.getRange('B18:B21').setBackground('#fef3c7').setFontWeight('bold');
-  sheet.getRange('B18:C21').setBorder(true, true, true, true, true, true, '#fcd34d', SpreadsheetApp.BorderStyle.SOLID);
+  sheet.getRange('B22:C25').setValues(sheets);
+  sheet.getRange('B22:B25').setBackground('#fef3c7').setFontWeight('bold');
+  sheet.getRange('B22:C25').setBorder(true, true, true, true, true, true, '#fcd34d', SpreadsheetApp.BorderStyle.SOLID);
 
   // ========== 슬랙 알림 ==========
-  sheet.getRange('D9').setValue('📅 슬랙 알림 (자동)');
-  sheet.getRange('D9').setFontSize(12).setFontWeight('bold');
+  sheet.getRange('D25').setValue('📅 슬랙 알림 (자동)');
+  sheet.getRange('D25').setFontSize(12).setFontWeight('bold');
 
   const slackInfo = [
     ['주간 리포트', '매주 월요일 오전 10시'],
     ['격려 알림', '매일 오전 9시 (3일 이상 미접속자)']
   ];
 
-  sheet.getRange('D10:E11').setValues(slackInfo);
-  sheet.getRange('D10:D11').setBackground('#fce7f3').setFontWeight('bold');
-  sheet.getRange('D10:E11').setBorder(true, true, true, true, true, true, '#f9a8d4', SpreadsheetApp.BorderStyle.SOLID);
+  sheet.getRange('D26:E27').setValues(slackInfo);
+  sheet.getRange('D26:D27').setBackground('#fce7f3').setFontWeight('bold');
+  sheet.getRange('D26:E27').setBorder(true, true, true, true, true, true, '#f9a8d4', SpreadsheetApp.BorderStyle.SOLID);
 
-  // ========== 기록 컬럼 안내 ==========
-  sheet.getRange('D13').setValue('📝 기록 컬럼 (17개)');
-  sheet.getRange('D13').setFontSize(12).setFontWeight('bold');
+  // ========== 참고 자료 ==========
+  sheet.getRange('B27').setValue('🔗 참고 자료');
+  sheet.getRange('B27').setFontSize(12).setFontWeight('bold');
 
-  const columns = [
-    ['타임스탬프, 세션ID, 풀이모드, 문제ID'],
-    ['문제내용, 선지, 선택한 답, 정답, 해설'],
-    ['정답여부, 문제유형, AWS서비스'],
-    ['소요시간, 시도횟수, 요일, 시간대, 누적정답률']
+  const resources = [
+    ['AWS 시험 가이드', 'aws.amazon.com/certification/'],
+    ['AWS Skill Builder', 'skillbuilder.aws (무료 학습)'],
+    ['Udemy 강의', 'udemy.com/.../aws-certified-solutions-architect-associate-saa-c03']
   ];
 
-  sheet.getRange('D14:D17').setValues(columns);
-  sheet.getRange('D14:E17').setBackground('#f3f4f6');
-  sheet.getRange('D14:E17').setBorder(true, true, true, true, true, true, '#d1d5db', SpreadsheetApp.BorderStyle.SOLID);
+  sheet.getRange('B28:C30').setValues(resources);
+  sheet.getRange('B28:B30').setBackground('#fff7ed').setFontWeight('bold');
+  sheet.getRange('C28:C30').setFontColor('#667eea');
+  sheet.getRange('B28:C30').setBorder(true, true, true, true, true, true, '#fdba74', SpreadsheetApp.BorderStyle.SOLID);
 
   // ========== 마지막 업데이트 ==========
   const now = new Date();
   const updateDate = Utilities.formatDate(now, 'Asia/Seoul', 'yyyy-MM-dd HH:mm');
-  sheet.getRange('B23').setValue('⏰ 마지막 업데이트: ' + updateDate);
-  sheet.getRange('B23').setFontColor('#6b7280').setFontSize(10);
+  sheet.getRange('B32').setValue('⏰ 마지막 업데이트: ' + updateDate);
+  sheet.getRange('B32').setFontColor('#6b7280').setFontSize(10);
 
   // 전체 시트 세로 정렬
   sheet.getRange('A1:F50').setVerticalAlignment('middle');
