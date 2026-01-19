@@ -969,7 +969,52 @@
     }
 
     .info-modal-body {
+      padding: 0;
+    }
+
+    /* 탭 메뉴 */
+    .info-tabs {
+      display: flex;
+      border-bottom: 2px solid #e5e7eb;
+      background: #f9fafb;
+    }
+
+    .info-tab {
+      flex: 1;
+      padding: 0.75rem 1rem;
+      border: none;
+      background: none;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-family: inherit;
+      color: #6b7280;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+    }
+
+    .info-tab:hover {
+      color: #667eea;
+      background: #f3f4f6;
+    }
+
+    .info-tab.active {
+      color: #667eea;
+      font-weight: 600;
+      border-bottom: 2px solid #667eea;
+      margin-bottom: -2px;
+      background: white;
+    }
+
+    .info-tab-content {
       padding: 1.5rem;
+      display: none;
+    }
+
+    .info-tab-content.active {
+      display: block;
     }
 
     .info-section {
@@ -1103,6 +1148,114 @@
       font-size: 1rem;
     }
 
+    /* 사용가이드 스타일 */
+    .guide-section {
+      margin-bottom: 1.5rem;
+    }
+
+    .guide-section:last-child {
+      margin-bottom: 0;
+    }
+
+    .guide-section h3 {
+      font-size: 1rem;
+      color: #374151;
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .guide-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+    }
+
+    .guide-table th,
+    .guide-table td {
+      padding: 0.6rem 0.8rem;
+      text-align: left;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    .guide-table th {
+      background: #f9fafb;
+      font-weight: 600;
+      color: #374151;
+      white-space: nowrap;
+    }
+
+    .guide-table td {
+      color: #6b7280;
+    }
+
+    .guide-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .guide-steps {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .guide-step {
+      display: flex;
+      gap: 0.75rem;
+      padding: 0.75rem;
+      background: #f9fafb;
+      border-radius: 8px;
+    }
+
+    .guide-step-num {
+      width: 24px;
+      height: 24px;
+      background: #667eea;
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+
+    .guide-step-text {
+      font-size: 0.85rem;
+      color: #374151;
+      line-height: 1.5;
+    }
+
+    .feature-cards {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.75rem;
+    }
+
+    .feature-card {
+      background: #f9fafb;
+      border-radius: 8px;
+      padding: 0.75rem;
+    }
+
+    .feature-card-title {
+      font-weight: 600;
+      color: #374151;
+      font-size: 0.85rem;
+      margin-bottom: 0.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .feature-card-desc {
+      font-size: 0.8rem;
+      color: #6b7280;
+      line-height: 1.4;
+    }
+
     @media (max-width: 640px) {
       .header h1 {
         font-size: 1.3rem;
@@ -1194,6 +1347,15 @@
         border-radius: 16px 16px 0 0;
         margin-top: auto;
       }
+
+      .feature-cards {
+        grid-template-columns: 1fr;
+      }
+
+      .info-tab {
+        font-size: 0.8rem;
+        padding: 0.6rem 0.5rem;
+      }
     }
   </style>
 </head>
@@ -1231,120 +1393,227 @@
     <div class="modal-overlay" v-if="showExamInfo" @click.self="showExamInfo = false">
       <div class="info-modal">
         <div class="info-modal-header">
-          <h2>SAA-C03 시험 정보</h2>
+          <h2>AWS SAA-C03</h2>
           <button class="info-modal-close" @click="showExamInfo = false">✕</button>
         </div>
         <div class="info-modal-body">
-          <!-- 시험 정보 -->
-          <div class="info-section">
-            <h3><span>📋</span> 시험 개요</h3>
-            <div class="info-grid">
-              <div class="info-item">
-                <span class="label">시험 시간</span>
-                <span class="value">130분</span>
+          <!-- 탭 메뉴 -->
+          <div class="info-tabs">
+            <button class="info-tab" :class="{ active: infoTab === 'exam' }" @click="infoTab = 'exam'">
+              <span>📋</span> 시험정보
+            </button>
+            <button class="info-tab" :class="{ active: infoTab === 'guide' }" @click="infoTab = 'guide'">
+              <span>📖</span> 사용가이드
+            </button>
+            <button class="info-tab" :class="{ active: infoTab === 'resources' }" @click="infoTab = 'resources'">
+              <span>🔗</span> 참고자료
+            </button>
+          </div>
+
+          <!-- 탭 1: 시험정보 -->
+          <div class="info-tab-content" :class="{ active: infoTab === 'exam' }">
+            <div class="info-section">
+              <h3><span>📋</span> 시험 개요</h3>
+              <div class="info-grid">
+                <div class="info-item">
+                  <span class="label">시험 시간</span>
+                  <span class="value">130분</span>
+                </div>
+                <div class="info-item">
+                  <span class="label">문제 수</span>
+                  <span class="value">65문제</span>
+                </div>
+                <div class="info-item">
+                  <span class="label">합격 점수</span>
+                  <span class="value">720 / 1000점</span>
+                </div>
+                <div class="info-item">
+                  <span class="label">합격 기준</span>
+                  <span class="value">약 72%</span>
+                </div>
+                <div class="info-item">
+                  <span class="label">시험 비용</span>
+                  <span class="value">$150 USD</span>
+                </div>
+                <div class="info-item">
+                  <span class="label">유효 기간</span>
+                  <span class="value">3년</span>
+                </div>
+                <div class="info-item">
+                  <span class="label">언어</span>
+                  <span class="value">한국어 / 영어</span>
+                </div>
+                <div class="info-item">
+                  <span class="label">추가 시간</span>
+                  <span class="value">+30분 (비영어권)</span>
+                </div>
               </div>
-              <div class="info-item">
-                <span class="label">문제 수</span>
-                <span class="value">65문제</span>
+            </div>
+
+            <div class="info-section">
+              <h3><span>📊</span> 출제 도메인</h3>
+              <div class="domain-list">
+                <div class="domain-item">
+                  <div class="domain-header">
+                    <span class="domain-name">도메인 1: 보안 아키텍처 설계</span>
+                    <span class="domain-percent">30%</span>
+                  </div>
+                  <div class="domain-bar">
+                    <div class="domain-bar-fill" style="width: 100%;"></div>
+                  </div>
+                </div>
+                <div class="domain-item">
+                  <div class="domain-header">
+                    <span class="domain-name">도메인 2: 복원력 있는 아키텍처 설계</span>
+                    <span class="domain-percent">26%</span>
+                  </div>
+                  <div class="domain-bar">
+                    <div class="domain-bar-fill" style="width: 87%;"></div>
+                  </div>
+                </div>
+                <div class="domain-item">
+                  <div class="domain-header">
+                    <span class="domain-name">도메인 3: 고성능 아키텍처 설계</span>
+                    <span class="domain-percent">24%</span>
+                  </div>
+                  <div class="domain-bar">
+                    <div class="domain-bar-fill" style="width: 80%;"></div>
+                  </div>
+                </div>
+                <div class="domain-item">
+                  <div class="domain-header">
+                    <span class="domain-name">도메인 4: 비용 최적화 아키텍처 설계</span>
+                    <span class="domain-percent">20%</span>
+                  </div>
+                  <div class="domain-bar">
+                    <div class="domain-bar-fill" style="width: 67%;"></div>
+                  </div>
+                </div>
               </div>
-              <div class="info-item">
-                <span class="label">합격 점수</span>
-                <span class="value">720 / 1000점</span>
+            </div>
+
+            <div class="info-section">
+              <h3><span>💡</span> 시험 준비 팁</h3>
+              <ul class="tips-list">
+                <li>문제당 평균 2분 배분 (65문제 × 2분 = 130분)</li>
+                <li>모르는 문제는 플래그 후 나중에 재검토</li>
+                <li>시나리오 기반 문제 - 요구사항 정확히 파악</li>
+                <li>Well-Architected Framework 5대 원칙 숙지</li>
+                <li>각 서비스의 사용 사례 및 제한사항 파악</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- 탭 2: 사용가이드 -->
+          <div class="info-tab-content" :class="{ active: infoTab === 'guide' }">
+            <div class="guide-section">
+              <h3><span>🚀</span> 시작하기</h3>
+              <div class="guide-steps">
+                <div class="guide-step">
+                  <span class="guide-step-num">1</span>
+                  <span class="guide-step-text">웹 앱 접속 후 드롭다운에서 <strong>본인 이름 선택</strong></span>
+                </div>
+                <div class="guide-step">
+                  <span class="guide-step-num">2</span>
+                  <span class="guide-step-text"><strong>"시작하기"</strong> 버튼 클릭</span>
+                </div>
+                <div class="guide-step">
+                  <span class="guide-step-num">3</span>
+                  <span class="guide-step-text">풀이 기록은 <strong>자동으로 저장</strong>됩니다</span>
+                </div>
               </div>
-              <div class="info-item">
-                <span class="label">합격 기준</span>
-                <span class="value">약 72%</span>
-              </div>
-              <div class="info-item">
-                <span class="label">시험 비용</span>
-                <span class="value">$150 USD</span>
-              </div>
-              <div class="info-item">
-                <span class="label">유효 기간</span>
-                <span class="value">3년</span>
-              </div>
-              <div class="info-item">
-                <span class="label">언어</span>
-                <span class="value">한국어 / 영어</span>
-              </div>
-              <div class="info-item">
-                <span class="label">추가 시간</span>
-                <span class="value">+30분 (비영어권)</span>
+            </div>
+
+            <div class="guide-section">
+              <h3><span>🎯</span> 풀이 모드</h3>
+              <table class="guide-table">
+                <tr>
+                  <th>순차</th>
+                  <td>1번부터 순서대로 풀기 (724문제)</td>
+                </tr>
+                <tr>
+                  <th>랜덤</th>
+                  <td>무작위 순서로 풀기</td>
+                </tr>
+                <tr>
+                  <th>오답복습</th>
+                  <td>틀린 문제만 다시 풀기</td>
+                </tr>
+                <tr>
+                  <th>미풀이</th>
+                  <td>아직 안 푼 문제만 풀기</td>
+                </tr>
+                <tr>
+                  <th>북마크</th>
+                  <td>저장해둔 문제만 풀기</td>
+                </tr>
+              </table>
+            </div>
+
+            <div class="guide-section">
+              <h3><span>✨</span> 주요 기능</h3>
+              <div class="feature-cards">
+                <div class="feature-card">
+                  <div class="feature-card-title"><span>🏷️</span> 서비스별 풀기</div>
+                  <div class="feature-card-desc">EC2, S3, Lambda 등 원하는 AWS 서비스만 집중 학습</div>
+                </div>
+                <div class="feature-card">
+                  <div class="feature-card-title"><span>📝</span> 모의고사</div>
+                  <div class="feature-card-desc">실제 시험과 동일 (65문제/130분, 합격 72%)</div>
+                </div>
+                <div class="feature-card">
+                  <div class="feature-card-title"><span>⭐</span> 북마크</div>
+                  <div class="feature-card-desc">문제 우측 상단 ☆ 클릭하여 저장, 나중에 복습</div>
+                </div>
+                <div class="feature-card">
+                  <div class="feature-card-title"><span>📋</span> 오답노트</div>
+                  <div class="feature-card-desc">틀린 문제 자동 수집, 서비스별 필터, 오답 횟수 확인</div>
+                </div>
               </div>
             </div>
           </div>
 
-          <!-- 출제 도메인 -->
-          <div class="info-section">
-            <h3><span>📊</span> 출제 도메인</h3>
-            <div class="domain-list">
-              <div class="domain-item">
-                <div class="domain-header">
-                  <span class="domain-name">도메인 1: 보안 아키텍처 설계</span>
-                  <span class="domain-percent">30%</span>
-                </div>
-                <div class="domain-bar">
-                  <div class="domain-bar-fill" style="width: 100%;"></div>
-                </div>
-              </div>
-              <div class="domain-item">
-                <div class="domain-header">
-                  <span class="domain-name">도메인 2: 복원력 있는 아키텍처 설계</span>
-                  <span class="domain-percent">26%</span>
-                </div>
-                <div class="domain-bar">
-                  <div class="domain-bar-fill" style="width: 87%;"></div>
-                </div>
-              </div>
-              <div class="domain-item">
-                <div class="domain-header">
-                  <span class="domain-name">도메인 3: 고성능 아키텍처 설계</span>
-                  <span class="domain-percent">24%</span>
-                </div>
-                <div class="domain-bar">
-                  <div class="domain-bar-fill" style="width: 80%;"></div>
-                </div>
-              </div>
-              <div class="domain-item">
-                <div class="domain-header">
-                  <span class="domain-name">도메인 4: 비용 최적화 아키텍처 설계</span>
-                  <span class="domain-percent">20%</span>
-                </div>
-                <div class="domain-bar">
-                  <div class="domain-bar-fill" style="width: 67%;"></div>
-                </div>
+          <!-- 탭 3: 참고자료 -->
+          <div class="info-tab-content" :class="{ active: infoTab === 'resources' }">
+            <div class="info-section">
+              <h3><span>📚</span> 학습 자료</h3>
+              <div class="resource-list">
+                <a href="https://aws.amazon.com/ko/certification/certified-solutions-architect-associate/" target="_blank" class="resource-link">
+                  <span class="icon">📄</span> AWS 공식 시험 가이드
+                </a>
+                <a href="https://skillbuilder.aws/" target="_blank" class="resource-link">
+                  <span class="icon">📚</span> AWS Skill Builder (무료 학습)
+                </a>
+                <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/" target="_blank" class="resource-link">
+                  <span class="icon">🎓</span> Udemy 강의 (Stephane Maarek)
+                </a>
+                <a href="https://drive.google.com/file/d/1xzYjit12Vb-i6N-znQfaWrpoc3W_5vHx/view?usp=drive_link" target="_blank" class="resource-link">
+                  <span class="icon">📝</span> 예상문항 PDF
+                </a>
               </div>
             </div>
-          </div>
 
-          <!-- 시험 준비 팁 -->
-          <div class="info-section">
-            <h3><span>💡</span> 시험 준비 팁</h3>
-            <ul class="tips-list">
-              <li>문제당 평균 2분 배분 (65문제 × 2분 = 130분)</li>
-              <li>모르는 문제는 플래그 후 나중에 재검토</li>
-              <li>시나리오 기반 문제 - 요구사항 정확히 파악</li>
-              <li>Well-Architected Framework 5대 원칙 숙지</li>
-              <li>각 서비스의 사용 사례 및 제한사항 파악</li>
-            </ul>
-          </div>
+            <div class="info-section">
+              <h3><span>🎯</span> 시험 예약</h3>
+              <div class="resource-list">
+                <a href="https://www.aws.training/certification" target="_blank" class="resource-link">
+                  <span class="icon">📅</span> AWS Training - 시험 예약
+                </a>
+                <a href="https://www.pearsonvue.com/aws" target="_blank" class="resource-link">
+                  <span class="icon">🏢</span> Pearson VUE 시험 센터
+                </a>
+              </div>
+            </div>
 
-          <!-- 참고 자료 -->
-          <div class="info-section">
-            <h3><span>🔗</span> 참고 자료</h3>
-            <div class="resource-list">
-              <a href="https://aws.amazon.com/ko/certification/certified-solutions-architect-associate/" target="_blank" class="resource-link">
-                <span class="icon">📄</span> AWS 시험 가이드
-              </a>
-              <a href="https://skillbuilder.aws/" target="_blank" class="resource-link">
-                <span class="icon">📚</span> AWS Skill Builder (무료 학습)
-              </a>
-              <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/" target="_blank" class="resource-link">
-                <span class="icon">🎓</span> Udemy 강의
-              </a>
-              <a href="https://drive.google.com/file/d/1xzYjit12Vb-i6N-znQfaWrpoc3W_5vHx/view?usp=drive_link" target="_blank" class="resource-link">
-                <span class="icon">📝</span> 예상문항 PDF
-              </a>
+            <div class="info-section">
+              <h3><span>💡</span> 합격 전략</h3>
+              <ul class="tips-list">
+                <li><strong>Well-Architected Framework</strong> 5대 원칙 (운영, 보안, 안정성, 성능, 비용) 숙지</li>
+                <li><strong>시나리오 기반 문제</strong>에서 핵심 요구사항 파악 연습</li>
+                <li>각 서비스의 <strong>사용 사례와 제한사항</strong> 암기</li>
+                <li><strong>오답노트</strong>를 활용한 취약 부분 집중 복습</li>
+                <li>시험 전 <strong>모의고사</strong>로 시간 관리 연습</li>
+              </ul>
             </div>
           </div>
         </div>
@@ -1794,6 +2063,7 @@
 
           // 시험정보 모달
           showExamInfo: false,
+          infoTab: 'exam',
 
           // 서버 동기화 타이머
           syncTimer: null
