@@ -976,9 +976,9 @@ function createDashboard(ss) {
   sheet.getRange('B27').setFontSize(12).setFontWeight('bold');
 
   const resources = [
-    ['AWS 시험 가이드', 'aws.amazon.com/certification/'],
-    ['AWS Skill Builder', 'skillbuilder.aws (무료 학습)'],
-    ['Udemy 강의', 'udemy.com/.../aws-certified-solutions-architect-associate-saa-c03']
+    ['AWS 시험 가이드', 'https://aws.amazon.com/ko/certification/certified-solutions-architect-associate/'],
+    ['AWS Skill Builder', 'https://skillbuilder.aws/'],
+    ['Udemy 강의', 'https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/']
   ];
 
   sheet.getRange('B28:C30').setValues(resources);
