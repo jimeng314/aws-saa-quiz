@@ -978,19 +978,20 @@ function createDashboard(ss) {
   const resources = [
     ['AWS 시험 가이드', 'https://aws.amazon.com/ko/certification/certified-solutions-architect-associate/'],
     ['AWS Skill Builder', 'https://skillbuilder.aws/'],
-    ['Udemy 강의', 'https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/']
+    ['Udemy 강의', 'https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/'],
+    ['예상문항 PDF', 'https://drive.google.com/file/d/1xzYjit12Vb-i6N-znQfaWrpoc3W_5vHx/view?usp=drive_link']
   ];
 
-  sheet.getRange('B28:C30').setValues(resources);
-  sheet.getRange('B28:B30').setBackground('#fff7ed').setFontWeight('bold');
-  sheet.getRange('C28:C30').setFontColor('#667eea');
-  sheet.getRange('B28:C30').setBorder(true, true, true, true, true, true, '#fdba74', SpreadsheetApp.BorderStyle.SOLID);
+  sheet.getRange('B28:C31').setValues(resources);
+  sheet.getRange('B28:B31').setBackground('#fff7ed').setFontWeight('bold');
+  sheet.getRange('C28:C31').setFontColor('#667eea');
+  sheet.getRange('B28:C31').setBorder(true, true, true, true, true, true, '#fdba74', SpreadsheetApp.BorderStyle.SOLID);
 
   // ========== 마지막 업데이트 ==========
   const now = new Date();
   const updateDate = Utilities.formatDate(now, 'Asia/Seoul', 'yyyy-MM-dd HH:mm');
-  sheet.getRange('B32').setValue('⏰ 마지막 업데이트: ' + updateDate);
-  sheet.getRange('B32').setFontColor('#6b7280').setFontSize(10);
+  sheet.getRange('B33').setValue('⏰ 마지막 업데이트: ' + updateDate);
+  sheet.getRange('B33').setFontColor('#6b7280').setFontSize(10);
 
   // 전체 시트 세로 정렬
   sheet.getRange('A1:F50').setVerticalAlignment('middle');

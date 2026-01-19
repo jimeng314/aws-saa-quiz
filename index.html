@@ -887,6 +887,222 @@
       background: #fef2f2;
     }
 
+    /* 시험정보 버튼 */
+    .exam-info-btn {
+      background: rgba(255,255,255,0.2);
+      border: 1px solid rgba(255,255,255,0.3);
+      color: white;
+      padding: 0.4rem 0.8rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: all 0.2s ease;
+    }
+
+    .exam-info-btn:hover {
+      background: rgba(255,255,255,0.3);
+    }
+
+    /* 헤더 요약 정보 */
+    .header-summary {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin-top: 0.75rem;
+      font-size: 0.85rem;
+      opacity: 0.9;
+    }
+
+    .header-summary span {
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+
+    /* 시험정보 모달 */
+    .info-modal {
+      background: white;
+      padding: 0;
+      border-radius: 16px;
+      max-width: 600px;
+      width: 95%;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    }
+
+    .info-modal-header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 1.5rem;
+      border-radius: 16px 16px 0 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .info-modal-header h2 {
+      margin: 0;
+      font-size: 1.3rem;
+    }
+
+    .info-modal-close {
+      background: rgba(255,255,255,0.2);
+      border: none;
+      color: white;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 1.2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .info-modal-close:hover {
+      background: rgba(255,255,255,0.3);
+    }
+
+    .info-modal-body {
+      padding: 1.5rem;
+    }
+
+    .info-section {
+      margin-bottom: 1.5rem;
+    }
+
+    .info-section:last-child {
+      margin-bottom: 0;
+    }
+
+    .info-section h3 {
+      font-size: 1rem;
+      color: #374151;
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.5rem;
+    }
+
+    .info-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.6rem 0.8rem;
+      background: #f9fafb;
+      border-radius: 8px;
+    }
+
+    .info-item .label {
+      color: #6b7280;
+      font-size: 0.85rem;
+    }
+
+    .info-item .value {
+      font-weight: 600;
+      color: #1f2937;
+      font-size: 0.85rem;
+    }
+
+    /* 도메인 진행바 */
+    .domain-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .domain-item {
+      background: #f9fafb;
+      padding: 0.75rem;
+      border-radius: 8px;
+    }
+
+    .domain-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.4rem;
+      font-size: 0.85rem;
+    }
+
+    .domain-name {
+      color: #374151;
+    }
+
+    .domain-percent {
+      font-weight: 600;
+      color: #667eea;
+    }
+
+    .domain-bar {
+      height: 8px;
+      background: #e5e7eb;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .domain-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+      border-radius: 4px;
+    }
+
+    /* 팁 목록 */
+    .tips-list {
+      background: #ecfdf5;
+      border-radius: 8px;
+      padding: 1rem;
+    }
+
+    .tips-list li {
+      color: #065f46;
+      font-size: 0.85rem;
+      margin-bottom: 0.5rem;
+      line-height: 1.5;
+    }
+
+    .tips-list li:last-child {
+      margin-bottom: 0;
+    }
+
+    /* 참고자료 링크 */
+    .resource-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .resource-link {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.6rem 0.8rem;
+      background: #fff7ed;
+      border-radius: 8px;
+      text-decoration: none;
+      color: #9a3412;
+      font-size: 0.85rem;
+      transition: all 0.2s ease;
+    }
+
+    .resource-link:hover {
+      background: #ffedd5;
+      transform: translateX(4px);
+    }
+
+    .resource-link .icon {
+      font-size: 1rem;
+    }
+
     @media (max-width: 640px) {
       .header h1 {
         font-size: 1.3rem;
@@ -962,6 +1178,22 @@
       .extra-btn {
         justify-content: center;
       }
+
+      .header-summary {
+        flex-wrap: wrap;
+        gap: 0.5rem;
+      }
+
+      .info-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .info-modal {
+        width: 100%;
+        max-height: 85vh;
+        border-radius: 16px 16px 0 0;
+        margin-top: auto;
+      }
     }
   </style>
 </head>
@@ -995,10 +1227,143 @@
       </div>
     </div>
 
+    <!-- 시험정보 모달 -->
+    <div class="modal-overlay" v-if="showExamInfo" @click.self="showExamInfo = false">
+      <div class="info-modal">
+        <div class="info-modal-header">
+          <h2>SAA-C03 시험 정보</h2>
+          <button class="info-modal-close" @click="showExamInfo = false">✕</button>
+        </div>
+        <div class="info-modal-body">
+          <!-- 시험 정보 -->
+          <div class="info-section">
+            <h3><span>📋</span> 시험 개요</h3>
+            <div class="info-grid">
+              <div class="info-item">
+                <span class="label">시험 시간</span>
+                <span class="value">130분</span>
+              </div>
+              <div class="info-item">
+                <span class="label">문제 수</span>
+                <span class="value">65문제</span>
+              </div>
+              <div class="info-item">
+                <span class="label">합격 점수</span>
+                <span class="value">720 / 1000점</span>
+              </div>
+              <div class="info-item">
+                <span class="label">합격 기준</span>
+                <span class="value">약 72%</span>
+              </div>
+              <div class="info-item">
+                <span class="label">시험 비용</span>
+                <span class="value">$150 USD</span>
+              </div>
+              <div class="info-item">
+                <span class="label">유효 기간</span>
+                <span class="value">3년</span>
+              </div>
+              <div class="info-item">
+                <span class="label">언어</span>
+                <span class="value">한국어 / 영어</span>
+              </div>
+              <div class="info-item">
+                <span class="label">추가 시간</span>
+                <span class="value">+30분 (비영어권)</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 출제 도메인 -->
+          <div class="info-section">
+            <h3><span>📊</span> 출제 도메인</h3>
+            <div class="domain-list">
+              <div class="domain-item">
+                <div class="domain-header">
+                  <span class="domain-name">도메인 1: 보안 아키텍처 설계</span>
+                  <span class="domain-percent">30%</span>
+                </div>
+                <div class="domain-bar">
+                  <div class="domain-bar-fill" style="width: 100%;"></div>
+                </div>
+              </div>
+              <div class="domain-item">
+                <div class="domain-header">
+                  <span class="domain-name">도메인 2: 복원력 있는 아키텍처 설계</span>
+                  <span class="domain-percent">26%</span>
+                </div>
+                <div class="domain-bar">
+                  <div class="domain-bar-fill" style="width: 87%;"></div>
+                </div>
+              </div>
+              <div class="domain-item">
+                <div class="domain-header">
+                  <span class="domain-name">도메인 3: 고성능 아키텍처 설계</span>
+                  <span class="domain-percent">24%</span>
+                </div>
+                <div class="domain-bar">
+                  <div class="domain-bar-fill" style="width: 80%;"></div>
+                </div>
+              </div>
+              <div class="domain-item">
+                <div class="domain-header">
+                  <span class="domain-name">도메인 4: 비용 최적화 아키텍처 설계</span>
+                  <span class="domain-percent">20%</span>
+                </div>
+                <div class="domain-bar">
+                  <div class="domain-bar-fill" style="width: 67%;"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 시험 준비 팁 -->
+          <div class="info-section">
+            <h3><span>💡</span> 시험 준비 팁</h3>
+            <ul class="tips-list">
+              <li>문제당 평균 2분 배분 (65문제 × 2분 = 130분)</li>
+              <li>모르는 문제는 플래그 후 나중에 재검토</li>
+              <li>시나리오 기반 문제 - 요구사항 정확히 파악</li>
+              <li>Well-Architected Framework 5대 원칙 숙지</li>
+              <li>각 서비스의 사용 사례 및 제한사항 파악</li>
+            </ul>
+          </div>
+
+          <!-- 참고 자료 -->
+          <div class="info-section">
+            <h3><span>🔗</span> 참고 자료</h3>
+            <div class="resource-list">
+              <a href="https://aws.amazon.com/ko/certification/certified-solutions-architect-associate/" target="_blank" class="resource-link">
+                <span class="icon">📄</span> AWS 시험 가이드
+              </a>
+              <a href="https://skillbuilder.aws/" target="_blank" class="resource-link">
+                <span class="icon">📚</span> AWS Skill Builder (무료 학습)
+              </a>
+              <a href="https://www.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/" target="_blank" class="resource-link">
+                <span class="icon">🎓</span> Udemy 강의
+              </a>
+              <a href="https://drive.google.com/file/d/1xzYjit12Vb-i6N-znQfaWrpoc3W_5vHx/view?usp=drive_link" target="_blank" class="resource-link">
+                <span class="icon">📝</span> 예상문항 PDF
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div class="container">
       <!-- 헤더 -->
       <div class="header">
         <h1>AWS Solution Architect Associate</h1>
+        <!-- 시험 요약 정보 -->
+        <div class="header-summary">
+          <span>📝 65문제</span>
+          <span>⏱️ 130분</span>
+          <span>✅ 합격 72%</span>
+          <button class="exam-info-btn" @click="showExamInfo = true">
+            <span>ℹ️</span> 상세보기
+          </button>
+        </div>
         <div class="header-content" v-if="currentUser">
           <div class="user-badge">
             {{ currentUser }}
@@ -1426,6 +1791,9 @@
           examStartTime: null,
           showExamResult: false,
           examResult: null,
+
+          // 시험정보 모달
+          showExamInfo: false,
 
           // 서버 동기화 타이머
           syncTimer: null
