@@ -15,7 +15,7 @@
 // 설정
 // ============================================
 const SPREADSHEET_ID = '146VfL2XxlXdJsUMad4WixRbXVhoINJCCC3XoBdCGwtg';
-const SLACK_WEBHOOK_URL = 'YOUR_SLACK_WEBHOOK_URL_HERE';
+const SLACK_WEBHOOK_URL = 'YOUR_SLACK_WEBHOOK_URL'; // secrets.txt 참조
 
 const SHEET_DASHBOARD = '대시보드';
 const SHEET_USERS = '사용자목록';
@@ -681,7 +681,7 @@ function sendWeeklyReport() {
 }
 
 function sendEncouragementAlerts() {
-  if (SLACK_WEBHOOK_URL === 'YOUR_SLACK_WEBHOOK_URL_HERE') {
+  if (!SLACK_WEBHOOK_URL || SLACK_WEBHOOK_URL === 'YOUR_SLACK_WEBHOOK_URL_HERE') {
     console.log('슬랙 Webhook URL이 설정되지 않았습니다.');
     return;
   }
@@ -693,38 +693,96 @@ function sendEncouragementAlerts() {
   const threeDaysAgo = new Date();
   threeDaysAgo.setDate(threeDaysAgo.getDate() - 3);
 
+  const today = new Date();
+  const fmtMD = (d) => `${d.getMonth() + 1}/${d.getDate()}`;
+
+  // (선택) 정렬을 위한 수집
+  const inactiveList = [];
+
   for (const user of usersResult.users) {
-    if (!user.notificationEnabled || !user.slackId) continue;
+    // 통합 메시지라도 알림 OFF면 제외하는 게 자연스러움
+    if (!user.notificationEnabled) continue;
 
     const userSheet = ss.getSheetByName(user.name);
+
     let lastActivity = null;
     let solvedCount = 0;
 
     if (userSheet) {
       const data = userSheet.getDataRange().getValues();
-      solvedCount = new Set(data.slice(1).map(row => row[3])).size;
 
+      // 1행 헤더만 있는 경우 제외
       if (data.length > 1) {
-        lastActivity = new Date(data[data.length - 1][0]);
+        solvedCount = new Set(data.slice(1).map(row => row[3])).size;
+
+        const lastTs = data[data.length - 1][0];
+        if (lastTs) lastActivity = new Date(lastTs);
       }
     }
 
+    // 쉬고 있는 사람 조건: 기록이 없거나(=null) / 3일 이상 미접속
     if (!lastActivity || lastActivity < threeDaysAgo) {
-      const daysSince = lastActivity ?
-        Math.floor((new Date() - lastActivity) / (1000 * 60 * 60 * 24)) : '?';
+      const daysSince = lastActivity
+        ? Math.floor((today - lastActivity) / (1000 * 60 * 60 * 24))
+        : null;
 
       const progressRate = Math.round((solvedCount / 724) * 100);
       const remaining = 724 - solvedCount;
 
-      const message = `👋 <@${user.slackId}> ${user.name}님, ${daysSince}일째 쉬고 계시네요!\n\n` +
-        `📈 현재 진행률: ${solvedCount}/724 (${progressRate}%)\n` +
-        `🎯 남은 문제: ${remaining}개\n\n` +
-        `오늘 딱 ${user.dailyGoal}문제만 풀어볼까요? 💪`;
+      const nameOrMention = (user.slackId && String(user.slackId).trim())
+        ? `<@${user.slackId}> ${user.name}`
+        : `${user.name}`;
 
-      sendSlackMessage(message);
+      inactiveList.push({
+        name: user.name,
+        mention: nameOrMention,
+        lastActivity,
+        lastStr: lastActivity ? fmtMD(lastActivity) : '기록 없음',
+        daysSince: daysSince === null ? '∞' : `${daysSince}일`,
+        solvedCount,
+        progressRate,
+        remaining,
+        dailyGoal: user.dailyGoal || 10
+      });
     }
   }
+
+  if (inactiveList.length === 0) {
+    console.log('3일 이상 미접속자가 없어 통합 알림을 보내지 않습니다.');
+    return;
+  }
+
+  // 오래 쉰 사람 우선(기록없음/더 오래된 순)
+  inactiveList.sort((a, b) => {
+    if (!a.lastActivity && b.lastActivity) return -1;
+    if (a.lastActivity && !b.lastActivity) return 1;
+    if (!a.lastActivity && !b.lastActivity) return 0;
+    return a.lastActivity - b.lastActivity;
+  });
+
+  // 통합 메시지 구성
+  const weekAgo = new Date(today);
+  weekAgo.setDate(weekAgo.getDate() - 7);
+
+  let message = '';
+  message += `⏰ *AWS SAA 스터디 출석체크* (최근 3일 이상 미접속)\n\n`;
+  message += `잠깐 쉬고 있는 분들만 체크했어요 👀\n`;
+  message += `오늘은 “딱 목표만” 찍고 가시죠 → ${QUIZ_URL}\n\n`;
+
+  // Slack mrkdwn 테이블(모바일에서 가독성 떨어질 수 있어도 요청하신 형태에 맞춤)
+  message += `| 이름 | 마지막 활동 | 쉬는기간 | 누적(푼문제) | 진행률 | 남은문제 | 오늘목표 |\n`;
+  message += `|------|-----------|---------|-------------|-------|--------|--------|\n`;
+
+  for (const u of inactiveList) {
+    message += `| ${u.mention} | ${u.lastStr} | ${u.daysSince} | ${u.solvedCount} | ${u.progressRate}% | ${u.remaining} | ${u.dailyGoal} |\n`;
+  }
+
+  message += `\n✅ *오늘 미션*: “목표만큼” 풀고 종료 (시간 없으면 5문제라도 OK)\n`;
+  message += `📌 *팁*: 틀린 문제는 북마크/오답노트로 저장만 하고 다음으로 넘어가도 됨\n`;
+
+  sendSlackMessage(message);
 }
+
 
 function sendSlackMessage(message) {
   const payload = {
